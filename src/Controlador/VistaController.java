@@ -5,12 +5,14 @@
  */
 package Controlador;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
+import javafx.scene.control.MenuBar;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.FileChooser;
 
 /**
  * FXML Controller class
@@ -20,18 +22,21 @@ import javafx.scene.control.Button;
 public class VistaController implements Initializable {
 
     @FXML
-    private Button btnBoton;
-
+    private MenuBar menuBar;
+    @FXML
+    private AnchorPane anchorPane;
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-    }    
-
-    @FXML
-    private void click(ActionEvent event) {
     }
-    
+
+    public static FileChooser fileChooser() {
+        FileChooser f = new FileChooser();
+        f.setInitialDirectory(new File(System.getProperty("user.home")));
+        return f;
+    }
+
 }
