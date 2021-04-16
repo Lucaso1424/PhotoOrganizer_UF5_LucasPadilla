@@ -20,7 +20,7 @@ public class Main extends Application{
         
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Main.class.getResource("Vista/Vista.fxml"));
+            loader.setLocation(Main.class.getResource("../Vista/Vista.fxml"));
             Pane ventana = (Pane) loader.load();
             
             Scene scene = new Scene(ventana);

@@ -4,10 +4,11 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
 
 <AnchorPane id="AnchorPane" fx:id="anchorPane" prefHeight="563.0" prefWidth="761.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controlador.VistaController">
    <children>
-      <MenuBar fx:id="menuBar" layoutX="24.0" layoutY="1.0" prefHeight="15.0" prefWidth="601.0">
+      <MenuBar fx:id="menuBar" layoutX="-1.0" layoutY="1.0" prefHeight="26.0" prefWidth="761.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
@@ -26,5 +27,6 @@
           </Menu>
         </menus>
       </MenuBar>
+      <FlowPane fx:id="flow" layoutX="14.0" layoutY="35.0" prefHeight="521.0" prefWidth="223.0" style="-fx-background-color: #6efd70;" />
    </children>
 </AnchorPane>

@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.MenuBar;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.FlowPane;
 import javafx.stage.FileChooser;
 
 /**
@@ -25,6 +26,8 @@ public class VistaController implements Initializable {
     private MenuBar menuBar;
     @FXML
     private AnchorPane anchorPane;
+    @FXML
+    private FlowPane flow;
     /**
      * Initializes the controller class.
      */
