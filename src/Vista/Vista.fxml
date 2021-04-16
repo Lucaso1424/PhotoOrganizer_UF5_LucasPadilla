@@ -5,10 +5,9 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane id="AnchorPane" fx:id="anchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/16" fx:controller="Controlador.VistaController">
+<AnchorPane id="AnchorPane" fx:id="anchorPane" prefHeight="563.0" prefWidth="761.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controlador.VistaController">
    <children>
-      <MenuBar fx:id="menuBar" layoutY="2.0" prefHeight="15.0" prefWidth="601.0">
+      <MenuBar fx:id="menuBar" layoutX="24.0" layoutY="1.0" prefHeight="15.0" prefWidth="601.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
