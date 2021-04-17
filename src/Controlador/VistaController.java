@@ -14,11 +14,19 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import java.io.File;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
 
 /**
  * FXML Controller class
@@ -45,48 +53,105 @@ public class VistaController implements Initializable {
     private Text text11;
     @FXML
     private Text text1;
+    @FXML
+    private Button buttonBtn;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        // DEFINIMOS LA CARPETA DEL PROYECTO
         File file = new File(System.getProperty("user.dir"));
-        TreeItem tree = new TreeItem(file.getName());
-        listarDirectorio(file, tree);
+        // DEFINIMOS EL NOMBRE DE LA CARPETA
+        TreeItem treeProyecto = new TreeItem(file.getName());
+        // LLAMAMOS A LA FUNCIÓN DE LISTAR EL DIRECTORIO
+        listarDirectorio(file, treeProyecto);
+
+        // LLAMAMOS A LA FUNCIÓN DEL EVENTO DEL BOTÓN
+        // CREANDO EVENTO DEL BOTÓN
+        ActionEvent e = new ActionEvent();
+        eventoBoton(e, tree);
     }
-    
-    public void listarDirectorio(File archivo, TreeItem nombreDirectorio){
+
+    public void listarDirectorio(File archivo, TreeItem nombreDirectorio) {
         TreeItem<String> rootItem = new TreeItem<>("Directorio");
-        
+
         // LISTADO DE TODOS LOS ARCHIVOS
         File[] listado = archivo.listFiles();
-        
+
         // SI EL TIPO File ES UN DIRECTORIO, Y LA LISTA DE ARCHIVOS ES 0: 
         if (archivo.isDirectory() && archivo.list().length == 0) {
             // CREAMOS UN NUEVO TREE ITEM DE TIPO STRING
             TreeItem<String> treeItem = new TreeItem<>(archivo.getName());
-        }             
-        
+        }
+
         // RECORREMOS BUCLE PARA EL LISTADO DE TODOS LOS ARCHIVOS 
         for (int i = 0; i < listado.length; i++) {
             if (listado[i].isDirectory()) {
-                // SE IMPRIME NOMBRE DIRECTORIO            
-                System.out.println("Directorio: " + listado[i].getName());
                 // CREAMOS UN NUEVO TREE ITEM DE TIPO STRING PARA QUE MUESTRE CON EL getName EL NOMBRE DEL DIRECTORIO, RECORRIENDO LOS DIRECTORIOS
                 TreeItem<String> directorio = new TreeItem<>(listado[i].getName());
                 // AÑADIMOS EN EL nombreDirectorio, EL  DIRECTORIO CREADO POR EL BUCLE 
                 nombreDirectorio.getChildren().add(directorio);
-                
+
                 // LLAMAMOS A LA FUNCIÓN RECURSIVAMENTE PARA QUE RECORRA EL BUCLE PASAR LOS ARCHIVOS
                 listarDirectorio(listado[i], directorio);
             } else if (listado[i].isFile()) {
                 
             }
         }
-        
+
         // DEFINIMOS EN EL tree, COMO root EL TREEITEM DE nombreDirectorio
         tree.setRoot(nombreDirectorio);
+    }
+
+    public void eventoBoton(ActionEvent e, TreeView<String> tree) {
+        // LE PASAMOS COMO PARÁMETRO EL treeView DE LA VISTA
+        // PONEMOS EL BOTÓN CON UN setOnAction CON UN EVENTHANDLDER (COMO UN addEventListener DE JS)
+        buttonBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                DirectoryChooser fileC = new DirectoryChooser();
+                // DECLARAMOS COMO DIRECTORIO INICIAL, user.home                
+                fileC.setInitialDirectory(new File(System.getProperty("user.home")));
+                
+                // LE PASAMOS UN STAGE PARA ABRIR LA CARPETA DE IMAGENES
+                Stage primaryStage = new Stage();
+
+                // LE PASAMOS LA OPCION DEL primaryStage                
+                File opcion = fileC.showDialog(primaryStage);
+                // GESTIONAMOS UN CASO DE PRUEBA, SI LA OPCIÓN ES NULA O NO ES UN DIRECTORIO                
+                if (opcion == null || !opcion.isDirectory()) {
+                    // CREAMOS UNA ALERTA
+                    Alert alerta = new Alert(AlertType.ERROR);
+                    // MOSTRAMOS MENSAJE DE ALERTA
+                    alerta.setHeaderText("No se puede abrir el directorio.");
+                    alerta.setContentText("El archivo no es válido.");
+                    alerta.showAndWait();
+                } else {
+                    // HACEMOS EL SET ROOT DE LA CARPETA PADRE, LLAMANDO A LA FUNCIÓN DE ABRIR CARPETAS,
+                    // PASANDOLE LA opcion, QUE ES LA CARPETA COMO PARÁMETRO
+                    tree.setRoot(abrirCarpetas(opcion));
+                    System.out.println(opcion);
+                }
+            }
+        });
+    }
+
+    public TreeItem<String> abrirCarpetas(File directorio) {
+        TreeItem<String> rootTree = new TreeItem<String>(directorio.getName());
+        // HACEMOS UN FOR EACH, QUE POR CADA FILE DE CADA DIRECTORIO DE LA LISTA        
+        for (File files : directorio.listFiles()) {
+            if (files.isDirectory()) {
+                // SI ES UN DIRECTORIO, AÑADE LA CARPETA EN LA PADRE EN EL rootTree CON EL .add()
+                rootTree.getChildren().add(abrirCarpetas(files));
+            } else {
+                // SI NO ES UN DIRECTORIO, AÑADE EL ITEM DEL ARCHIVO CON EL .add() Y EL .getName()
+                rootTree.getChildren().add(new TreeItem<String>(files.getName()));
+            }
+        }
+        // HACEMOS EL RETURN DEL DIRECTORIO
+        return rootTree;
     }
 
 }
