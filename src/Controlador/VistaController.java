@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.MenuBar;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 
@@ -26,6 +27,12 @@ public class VistaController implements Initializable {
     private MenuBar menuBar;
     @FXML
     private FlowPane flowPane;
+    @FXML
+    private FlowPane flowPane1;
+    @FXML
+    private FlowPane flowPane2;
+    @FXML
+    private ImageView image;
 
     /**
      * Initializes the controller class.
