@@ -17,7 +17,7 @@ public class Main extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        
+
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(Main.class.getResource("../Vista/Vista.fxml"));
@@ -30,7 +30,7 @@ public class Main extends Application{
             System.out.println(e.getMessage());
         }
     }
-    
+
     public static void main(String[] args){
         launch(args);
     }
