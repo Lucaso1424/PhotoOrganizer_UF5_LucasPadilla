@@ -42,8 +42,6 @@ public class VistaController implements Initializable {
     @FXML
     private FlowPane flowPane;
     @FXML
-    private FlowPane flowPane1;
-    @FXML
     private FlowPane flowPane2;
     @FXML
     private ImageView image;
@@ -55,6 +53,8 @@ public class VistaController implements Initializable {
     private Text text1;
     @FXML
     private Button buttonBtn;
+    @FXML
+    private AnchorPane anchorPanelFinal;
 
     /**
      * Initializes the controller class.

@@ -14,7 +14,7 @@
 <AnchorPane id="AnchorPane" fx:id="anchorPane" prefHeight="810.0" prefWidth="1315.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controlador.VistaController">
    <children>
       <MenuBar fx:id="menuBar" layoutX="-1.0" layoutY="1.0" prefHeight="33.0" prefWidth="1306.0" />
-      <FlowPane fx:id="flowPane" layoutX="14.0" layoutY="37.0" prefHeight="752.0" prefWidth="208.0" style="-fx-background-color: #bebebf;">
+      <FlowPane fx:id="flowPane" layoutX="14.0" layoutY="37.0" prefHeight="752.0" prefWidth="208.0" style="-fx-background-color: e9ff7b;">
          <children>
             <Text fx:id="text11" strokeType="OUTSIDE" strokeWidth="0.0" text="Directorios">
                <font>
@@ -24,28 +24,26 @@
                   <Insets left="50.0" top="11.0" />
                </FlowPane.margin>
             </Text>
-            <TreeView fx:id="tree" prefHeight="693.0" prefWidth="210.0">
+            <TreeView fx:id="tree" prefHeight="693.0" prefWidth="210.0" style="-fx-background-color: e9ff7b;">
                <FlowPane.margin>
                   <Insets top="30.0" />
                </FlowPane.margin></TreeView>
          </children></FlowPane>
-      <FlowPane fx:id="flowPane1" layoutX="232.0" layoutY="37.0" prefHeight="758.0" prefWidth="876.0" style="-fx-background-color: #87ffc7;">
+      <AnchorPane fx:id="anchorPanelFinal" layoutX="235.0" layoutY="37.0" prefHeight="759.0" prefWidth="866.0" style="-fx-background-color: a9ff7b;">
          <children>
             <Button fx:id="buttonBtn" mnemonicParsing="false" prefHeight="31.0" prefWidth="150.0" text="Abrir carpeta">
                <font>
                   <Font size="35.0" />
                </font>
             </Button>
-            <Text fx:id="text1" strokeType="OUTSIDE" strokeWidth="0.0" text="Photo Organizer - Lucas Padilla">
+            <Text fx:id="text1" layoutX="288.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Photo Organizer - Lucas Padilla">
                <font>
                   <Font name="Arial Bold" size="22.0" />
                </font>
-               <FlowPane.margin>
-                  <Insets left="160.0" top="12.0" />
-               </FlowPane.margin>
             </Text>
-         </children></FlowPane>
-      <FlowPane fx:id="flowPane2" layoutX="1118.0" layoutY="37.0" prefHeight="758.0" prefWidth="183.0" style="-fx-background-color: #bebebf;">
+         </children>
+      </AnchorPane>
+      <FlowPane fx:id="flowPane2" layoutX="1113.0" layoutY="37.0" prefHeight="768.0" prefWidth="188.0" style="-fx-background-color: e9ff7b;">
          <children>
             <ImageView fx:id="image" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                <image>
