@@ -22,6 +22,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
@@ -61,6 +62,8 @@ public class VistaController implements Initializable {
     private AnchorPane anchorPanelFinal;
     @FXML
     private TilePane tilePane1;
+    @FXML
+    private ScrollPane scrollPane;
 
     /**
      * Initializes the controller class.
@@ -73,12 +76,13 @@ public class VistaController implements Initializable {
     int contador = 0;
 
     // NUMERO DE FILAS PARA TILE PANE
-    private int numeroFilas = 3;  
+    private int numeroFilas = 100;  
     // NUMERO DE COLUMNAS PARA TILE PANE
-    private int numeroColumnas = 3;  
+    private int numeroColumnas = 100;  
 
     private static final double ELEMENT_SIZE = 100;
     private static final double GAP = ELEMENT_SIZE / 10;
+    
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -122,9 +126,7 @@ public class VistaController implements Initializable {
 
                 // LLAMAMOS A LA FUNCIÓN RECURSIVAMENTE PARA QUE RECORRA EL BUCLE PASAR LOS ARCHIVOS
                 listarDirectorio(listado[i], directorio);
-            } else if (listado[i].isFile()) {
-
-            }
+            } 
         }
 
         // DEFINIMOS EN EL tree, COMO root EL TREEITEM DE nombreDirectorio
@@ -167,6 +169,7 @@ public class VistaController implements Initializable {
                     };
 
                     tree.setRoot(abrirCarpetas(opcion));
+                    // APLICAMOS EN EL ARRAY DE FOTOS, EL FILTRO DE ARCHIVOS .jpg
                     fotosJpg = opcion.listFiles(filterJpg);
                     
                     // LLAMAMOS AL METODO CREAR FOTOS AL ABRIR LA CARPETA SELECCIONADA
@@ -180,10 +183,14 @@ public class VistaController implements Initializable {
     }
 
     private void crearFotos() {
+        // HACEMOS UN CLEAR, CADA VEZ QUE VAYAMOS A RECARGAR UNA CARPETA
         tilePane1.getChildren().clear();
 
+        // RECORREMOS EN UN BUCLE LAS FILAS COLUMNAS 
         for (int i = 0; i < numeroColumnas; i++) {
             for (int j = 0; j < numeroFilas; j++) {
+                // DESPUÉS, HACEMOS UN getChildren DEL PANEL 
+                // Y LLAMAMOS A LA FUNCION crearPagina Y APLICAMOS EL CONTADOR
                 tilePane1.getChildren().add(crearPagina(contador));
                 contador++;
             }
@@ -191,13 +198,20 @@ public class VistaController implements Initializable {
     }
 
     public VBox crearPagina(int index) {
+        // CREAMOS UN OBJETO ImageView PARA VISUALIZAR LA FOTO
         ImageView imageView = new ImageView();
 
+        // DECLARAMOS EN UN NUEVO FILE EL ARRAY DE FOTOS
+        // PASANDOLE UN ENTERO, QUE ES EL CONTADOR DE LA FUNCION CREAR FOTOS
         File file = fotosJpg[index];
         try {
+            // LEEMOS LA FOTO CON EL BUFFERED IMAGE            
             BufferedImage bufferedImage = ImageIO.read(file);
+            // PASAMOS LA URL A toString
             Image image = new Image(file.toURI().toString());
+            // SETEAMOS LA IMAGEN DEL imageView, 
             imageView.setImage(image);
+            // AÑADIMOS LA MEDIDA DEL ELEMENT_SIZE, CON LOS setFitWidth Y setFitHeight
             imageView.setFitWidth(ELEMENT_SIZE);
             imageView.setFitHeight(ELEMENT_SIZE);
 
@@ -206,10 +220,15 @@ public class VistaController implements Initializable {
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
-
+        
+        // CREAMOS UNA NUEVA CAJA VBox
         VBox vbox = new VBox();
+        // AÑADIMOS CON EL getChildren() EL .add() DE LA PREVIEW DE LA IMAGEN 
+        // CON EL imageView DE ARRIBA
         vbox.getChildren().add(imageView);
 
+        // LO DECLARAMOS COMO NULO Y LA DEVOLVEMOS PARA  
+        // VOLVER A EJECUTAR LA FUNCIÓN Y QUE SE IMPRIMAN LAS FOTOS EN BUCLE
         imageView = null;
         return vbox;
     }

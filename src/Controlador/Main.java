@@ -25,6 +25,7 @@ public class Main extends Application {
             
             Scene scene = new Scene(ventana);
             primaryStage.setScene(scene);
+            primaryStage.setResizable(false);
             primaryStage.show();
         } catch (IOException e) {
             System.out.println(e.getMessage());
