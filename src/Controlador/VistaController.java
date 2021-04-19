@@ -17,6 +17,7 @@ import javafx.scene.layout.FlowPane;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
@@ -69,18 +70,18 @@ public class VistaController implements Initializable {
      * Initializes the controller class.
      */
     
-    // ARRAY DE FILE PARA GUARDAR LAS IMÁGENES
-    File fotosJpg[]; 
+    // ARRAYLIST DE FILE PARA GUARDAR LAS IMÁGENES
+    ArrayList<File> fotosJpg = new ArrayList<File>(); 
 
     // CONTADOR
     int contador = 0;
 
     // NUMERO DE FILAS PARA TILE PANE
-    private int numeroFilas = 100;  
-    // NUMERO DE COLUMNAS PARA TILE PANE
-    private int numeroColumnas = 100;  
+    private int numeroFilas;  
+    // NUMERO DE COLUMNAS PARA TILE PANE (3 COLUMNAS)
+    private int numeroColumnas = 3;  
 
-    private static final double ELEMENT_SIZE = 100;
+    private static final double ELEMENT_SIZE = 200;
     private static final double GAP = ELEMENT_SIZE / 10;
     
 
@@ -164,18 +165,52 @@ public class VistaController implements Initializable {
                     FilenameFilter filterJpg = new FilenameFilter() {
                         @Override
                         public boolean accept(File dir, String name) {
-                            return name.toLowerCase().endsWith(".jpg");
+                            boolean pepe = false;
+                            if (name.toLowerCase().endsWith(".jpg")) {
+                                pepe = name.toLowerCase().endsWith(".jpg");
+                            } 
+//                            else if (name.toLowerCase().endsWith(".png")) {
+//                                pepe = name.toLowerCase().endsWith(".png");
+//                            } 
+                            return pepe;
                         }
                     };
 
                     tree.setRoot(abrirCarpetas(opcion));
-                    // APLICAMOS EN EL ARRAY DE FOTOS, EL FILTRO DE ARCHIVOS .jpg
-                    fotosJpg = opcion.listFiles(filterJpg);
                     
+                    // DECLARAMOS EL NUEVO ARRAYLIST PARA EL fotoJpg PARA EL FILTRO
+                    fotosJpg = new ArrayList<File>();
+                    int x = 0;
+                    int y = 0;
+                    // APLICAMOS EN EL ARRAY DE FOTOS, EL FILTRO DE ARCHIVOS .jpg, CON UN FOR EACH DE FILES
+                    // PARA PASAR DE UN [] A UN ARRAYLIST
+                    for(File f:opcion.listFiles(filterJpg)){
+                        // LO AÑADIMOS CON EL f
+                        fotosJpg.add(f);
+                        if(x == 2){ 
+                            x = 0;
+                            y++;
+                        }
+                        else x++;
+                    }
+                    
+                    System.out.println(y + " - " + x);
+                    // SI LA y ES 0, y SE SUMARÁ EN 1 (QUE ES LA FILA), POR SI HAY SOLO 1 COLUMNA
+                    if (y == 0) y += 1;
+                    // SETEAMOS LA y DEL TILEPANE
+                    tilePane1.setPrefRows(y);
+                    // IGUALAMOS LA y PARA QUE SEA EL NUMERO DE FILAS
+                    numeroFilas = y;
+                    // SI y ES MEJOR QUE 0, DECLARAMOS IGUALMENTE LAS COLUMNAS A 3
+                    if(y > 0) {
+                        tilePane1.setPrefColumns(3);
+                        numeroColumnas = 3;
+                    } else {
+                        tilePane1.setPrefColumns(x + 1);
+                        numeroColumnas = x + 1;
+                    }                    
                     // LLAMAMOS AL METODO CREAR FOTOS AL ABRIR LA CARPETA SELECCIONADA
                     crearFotos();
-                    
-
                     System.out.println(opcion);
                 }
             }
@@ -185,7 +220,7 @@ public class VistaController implements Initializable {
     private void crearFotos() {
         // HACEMOS UN CLEAR, CADA VEZ QUE VAYAMOS A RECARGAR UNA CARPETA
         tilePane1.getChildren().clear();
-
+        contador = 0;
         // RECORREMOS EN UN BUCLE LAS FILAS COLUMNAS 
         for (int i = 0; i < numeroColumnas; i++) {
             for (int j = 0; j < numeroFilas; j++) {
@@ -198,12 +233,15 @@ public class VistaController implements Initializable {
     }
 
     public VBox crearPagina(int index) {
-        // CREAMOS UN OBJETO ImageView PARA VISUALIZAR LA FOTO
+        // CREAMOS UN OBJETO ImageView PARA VISUALIZAR LA FOTO        
         ImageView imageView = new ImageView();
-
+        
+        if(fotosJpg.size() <= index){
+            System.out.println("Index out of bounds");
+        }
         // DECLARAMOS EN UN NUEVO FILE EL ARRAY DE FOTOS
         // PASANDOLE UN ENTERO, QUE ES EL CONTADOR DE LA FUNCION CREAR FOTOS
-        File file = fotosJpg[index];
+        File file = fotosJpg.get(index);
         try {
             // LEEMOS LA FOTO CON EL BUFFERED IMAGE            
             BufferedImage bufferedImage = ImageIO.read(file);
