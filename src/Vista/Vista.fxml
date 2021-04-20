@@ -60,6 +60,11 @@
                   <Insets left="15.0" top="20.0" />
                </FlowPane.margin>
             </ImageView>
+            <ImageView fx:id="imageViewFotos" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+               <FlowPane.margin>
+                  <Insets top="40.0" />
+               </FlowPane.margin>
+            </ImageView>
          </children></FlowPane>
    </children>
 </AnchorPane>

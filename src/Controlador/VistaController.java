@@ -27,6 +27,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -65,25 +66,24 @@ public class VistaController implements Initializable {
     private TilePane tilePane1;
     @FXML
     private ScrollPane scrollPane;
-
+    @FXML
+    private ImageView imageViewFotos;
     /**
      * Initializes the controller class.
      */
-    
     // ARRAYLIST DE FILE PARA GUARDAR LAS IMÁGENES
-    ArrayList<File> fotosJpg = new ArrayList<File>(); 
+    ArrayList<File> fotosJpg = new ArrayList<File>();
 
     // CONTADOR
     int contador = 0;
 
     // NUMERO DE FILAS PARA TILE PANE
-    private int numeroFilas;  
+    private int numeroFilas;
     // NUMERO DE COLUMNAS PARA TILE PANE (3 COLUMNAS)
-    private int numeroColumnas = 3;  
+    private int numeroColumnas = 3;
 
     private static final double ELEMENT_SIZE = 200;
     private static final double GAP = ELEMENT_SIZE / 10;
-    
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -127,7 +127,7 @@ public class VistaController implements Initializable {
 
                 // LLAMAMOS A LA FUNCIÓN RECURSIVAMENTE PARA QUE RECORRA EL BUCLE PASAR LOS ARCHIVOS
                 listarDirectorio(listado[i], directorio);
-            } 
+            }
         }
 
         // DEFINIMOS EN EL tree, COMO root EL TREEITEM DE nombreDirectorio
@@ -160,7 +160,7 @@ public class VistaController implements Initializable {
                 } else {
                     // HACEMOS EL SET ROOT DE LA CARPETA PADRE, LLAMANDO A LA FUNCIÓN DE ABRIR CARPETAS,
                     // PASANDOLE LA opcion, QUE ES LA CARPETA COMO PARÁMETRO
-                    
+
                     // FILTRADO DE LAS IMAGENES JPG, CREANDO OBJETO FILENAMEFILTER
                     FilenameFilter filterJpg = new FilenameFilter() {
                         @Override
@@ -168,7 +168,7 @@ public class VistaController implements Initializable {
                             boolean pepe = false;
                             if (name.toLowerCase().endsWith(".jpg")) {
                                 pepe = name.toLowerCase().endsWith(".jpg");
-                            } 
+                            }
 //                            else if (name.toLowerCase().endsWith(".png")) {
 //                                pepe = name.toLowerCase().endsWith(".png");
 //                            } 
@@ -177,38 +177,40 @@ public class VistaController implements Initializable {
                     };
 
                     tree.setRoot(abrirCarpetas(opcion));
-                    
                     // DECLARAMOS EL NUEVO ARRAYLIST PARA EL fotoJpg PARA EL FILTRO
                     fotosJpg = new ArrayList<File>();
                     int x = 0;
                     int y = 0;
                     // APLICAMOS EN EL ARRAY DE FOTOS, EL FILTRO DE ARCHIVOS .jpg, CON UN FOR EACH DE FILES
                     // PARA PASAR DE UN [] A UN ARRAYLIST
-                    for(File f:opcion.listFiles(filterJpg)){
+                    for (File f : opcion.listFiles(filterJpg)) {
                         // LO AÑADIMOS CON EL f
                         fotosJpg.add(f);
-                        if(x == 2){ 
+                        if (x == 2) {
                             x = 0;
                             y++;
+                        } else {
+                            x++;
                         }
-                        else x++;
                     }
-                    
+
                     System.out.println(y + " - " + x);
                     // SI LA y ES 0, y SE SUMARÁ EN 1 (QUE ES LA FILA), POR SI HAY SOLO 1 COLUMNA
-                    if (y == 0) y += 1;
+                    if (y == 0) {
+                        y += 1;
+                    }
                     // SETEAMOS LA y DEL TILEPANE
                     tilePane1.setPrefRows(y);
                     // IGUALAMOS LA y PARA QUE SEA EL NUMERO DE FILAS
                     numeroFilas = y;
                     // SI y ES MEJOR QUE 0, DECLARAMOS IGUALMENTE LAS COLUMNAS A 3
-                    if(y > 0) {
+                    if (y > 0) {
                         tilePane1.setPrefColumns(3);
                         numeroColumnas = 3;
                     } else {
                         tilePane1.setPrefColumns(x + 1);
                         numeroColumnas = x + 1;
-                    }                    
+                    }
                     // LLAMAMOS AL METODO CREAR FOTOS AL ABRIR LA CARPETA SELECCIONADA
                     crearFotos();
                     System.out.println(opcion);
@@ -235,8 +237,10 @@ public class VistaController implements Initializable {
     public VBox crearPagina(int index) {
         // CREAMOS UN OBJETO ImageView PARA VISUALIZAR LA FOTO        
         ImageView imageView = new ImageView();
-        
-        if(fotosJpg.size() <= index){
+        // CREAREMOS EL OBJETO ImageFolder PARA ACCEDER A LA CLASE ImageFolder
+        ImageFolder a = new ImageFolder();
+
+        if (fotosJpg.size() <= index) {
             System.out.println("Index out of bounds");
         }
         // DECLARAMOS EN UN NUEVO FILE EL ARRAY DE FOTOS
@@ -247,7 +251,7 @@ public class VistaController implements Initializable {
             BufferedImage bufferedImage = ImageIO.read(file);
             // PASAMOS LA URL A toString
             Image image = new Image(file.toURI().toString());
-            // SETEAMOS LA IMAGEN DEL imageView, 
+            // SETEAMOS LA IMAGEN DEL imageView
             imageView.setImage(image);
             // AÑADIMOS LA MEDIDA DEL ELEMENT_SIZE, CON LOS setFitWidth Y setFitHeight
             imageView.setFitWidth(ELEMENT_SIZE);
@@ -255,10 +259,26 @@ public class VistaController implements Initializable {
 
             imageView.setSmooth(true);
             imageView.setCache(true);
+            
+            // SETEAMOS LA PREVIEW DE LA IMAGEN DE LA CLASE ImageFolder
+            a.setPreviewImage(imageView);
+
+            // HACEMOS EL getPreviewImage, Y ACCEDEMOS AL EVENT HANDLER DEL MOUSE CLICKED
+            a.getPreviewImage().setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent e) {
+                    // SETEAMOS LA IMAGEN image QUE GESTIONAMOS EN EL try
+                    a.setImage(image);
+                    // SETEAMOS LA IMAGEN EN imageViewFotos (QUE ES EL PANEL DE ImageView DE LA VISTA)
+                    // Y DENTRO HACEMOS UN getImage(); DE LA IMAGEN SETEADA DE LA LINEA DE ARRIBA
+                    imageViewFotos.setImage(a.getImage());
+                }
+            });
+
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
-        
+
         // CREAMOS UNA NUEVA CAJA VBox
         VBox vbox = new VBox();
         // AÑADIMOS CON EL getChildren() EL .add() DE LA PREVIEW DE LA IMAGEN 
