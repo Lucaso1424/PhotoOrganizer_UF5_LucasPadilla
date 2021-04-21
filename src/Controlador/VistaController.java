@@ -17,12 +17,14 @@ import javafx.scene.layout.FlowPane;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -68,6 +70,18 @@ public class VistaController implements Initializable {
     private ScrollPane scrollPane;
     @FXML
     private ImageView imageViewFotos;
+    @FXML
+    private Button imgGrande;
+    @FXML
+    private Button imgPeque;
+    @FXML
+    private Button imgDefault;
+    @FXML
+    private Text text12;
+    @FXML
+    private Text text13;
+    @FXML
+    private Text text131;
     /**
      * Initializes the controller class.
      */
@@ -82,7 +96,7 @@ public class VistaController implements Initializable {
     // NUMERO DE COLUMNAS PARA TILE PANE (3 COLUMNAS)
     private int numeroColumnas = 3;
 
-    private static final double ELEMENT_SIZE = 200;
+    private static double ELEMENT_SIZE = 200;
     private static final double GAP = ELEMENT_SIZE / 10;
 
     @Override
@@ -169,9 +183,6 @@ public class VistaController implements Initializable {
                             if (name.toLowerCase().endsWith(".jpg")) {
                                 pepe = name.toLowerCase().endsWith(".jpg");
                             }
-//                            else if (name.toLowerCase().endsWith(".png")) {
-//                                pepe = name.toLowerCase().endsWith(".png");
-//                            } 
                             return pepe;
                         }
                     };
@@ -211,9 +222,37 @@ public class VistaController implements Initializable {
                         tilePane1.setPrefColumns(x + 1);
                         numeroColumnas = x + 1;
                     }
-                    // LLAMAMOS AL METODO CREAR FOTOS AL ABRIR LA CARPETA SELECCIONADA
+                    // LLAMAMOS AL METODO CREAR FOTOS, LE PASAMOS LA MEDIDA DEL ELEMENT_SIZE
+                    // AL ABRIR LA CARPETA SELECCIONADA
                     crearFotos();
                     System.out.println(opcion);
+                    
+                    // CREAMOS UN NUEVO EVENTO DE RATON, PARA CAMBAIR LA MEDIDA DEL ELEMENT_SIZE
+                    // Y LLAMAMOS DE NUEVO A LA FUNCIÓN PARA CREAR LAS FOTOS, PARA QUE LAS BORRE Y LAS
+                    // CREE DE NUEVO LAS VBOX CON SUS MEDIDAS Y SUS IMAGENES
+                    imgPeque.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent event) {
+                            ELEMENT_SIZE = 100;
+                            crearFotos();
+                        }
+                    });
+                    // PARA LAS IMÁGENES GRANDES
+                    imgGrande.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent event) {
+                            ELEMENT_SIZE = 500;
+                            crearFotos();
+                        }
+                    });
+                    // LO MISMO PARA LAS IMÁGENES NORMALES
+                    imgDefault.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent event) {
+                            ELEMENT_SIZE = 200;
+                            crearFotos();
+                        }
+                    });
                 }
             }
         });
@@ -227,14 +266,14 @@ public class VistaController implements Initializable {
         for (int i = 0; i < numeroColumnas; i++) {
             for (int j = 0; j < numeroFilas; j++) {
                 // DESPUÉS, HACEMOS UN getChildren DEL PANEL 
-                // Y LLAMAMOS A LA FUNCION crearPagina Y APLICAMOS EL CONTADOR
-                tilePane1.getChildren().add(crearPagina(contador));
+                // Y LLAMAMOS A LA FUNCION crearVbox Y APLICAMOS EL CONTADOR
+                tilePane1.getChildren().add(crearVbox(contador));
                 contador++;
             }
         }
     }
 
-    public VBox crearPagina(int index) {
+    public VBox crearVbox(int index) {
         // CREAMOS UN OBJETO ImageView PARA VISUALIZAR LA FOTO        
         ImageView imageView = new ImageView();
         // CREAREMOS EL OBJETO ImageFolder PARA ACCEDER A LA CLASE ImageFolder
@@ -246,11 +285,19 @@ public class VistaController implements Initializable {
         // DECLARAMOS EN UN NUEVO FILE EL ARRAY DE FOTOS
         // PASANDOLE UN ENTERO, QUE ES EL CONTADOR DE LA FUNCION CREAR FOTOS
         File file = fotosJpg.get(index);
+
+        // CREAMOS UN NUEVO OBJETO DE DATE FORMAR, Y LE PASAMOS POR PARAMETROS LA FECHA Y HORA
+        SimpleDateFormat fechaFormato = new SimpleDateFormat("DD/MM/YYYY HH:MM:SS");
+        Label labelName = new Label(file.getName());
+        Label labelDate = new Label((fechaFormato.format(file.lastModified())));
+        labelName.setWrapText(true);
+        labelName.setMaxWidth(ELEMENT_SIZE);
         try {
             // LEEMOS LA FOTO CON EL BUFFERED IMAGE            
             BufferedImage bufferedImage = ImageIO.read(file);
             // PASAMOS LA URL A toString
             Image image = new Image(file.toURI().toString());
+
             // SETEAMOS LA IMAGEN DEL imageView
             imageView.setImage(image);
             // AÑADIMOS LA MEDIDA DEL ELEMENT_SIZE, CON LOS setFitWidth Y setFitHeight
@@ -259,7 +306,7 @@ public class VistaController implements Initializable {
 
             imageView.setSmooth(true);
             imageView.setCache(true);
-            
+
             // SETEAMOS LA PREVIEW DE LA IMAGEN DE LA CLASE ImageFolder
             a.setPreviewImage(imageView);
 
@@ -284,6 +331,8 @@ public class VistaController implements Initializable {
         // AÑADIMOS CON EL getChildren() EL .add() DE LA PREVIEW DE LA IMAGEN 
         // CON EL imageView DE ARRIBA
         vbox.getChildren().add(imageView);
+        vbox.getChildren().add(labelName);
+        vbox.getChildren().add(labelDate);
 
         // LO DECLARAMOS COMO NULO Y LA DEVOLVEMOS PARA  
         // VOLVER A EJECUTAR LA FUNCIÓN Y QUE SE IMPRIMAN LAS FOTOS EN BUCLE
