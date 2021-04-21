@@ -282,16 +282,18 @@ public class VistaController implements Initializable {
         if (fotosJpg.size() <= index) {
             System.out.println("Index out of bounds");
         }
+        
         // DECLARAMOS EN UN NUEVO FILE EL ARRAY DE FOTOS
         // PASANDOLE UN ENTERO, QUE ES EL CONTADOR DE LA FUNCION CREAR FOTOS
         File file = fotosJpg.get(index);
 
         // CREAMOS UN NUEVO OBJETO DE DATE FORMAR, Y LE PASAMOS POR PARAMETROS LA FECHA Y HORA
-        SimpleDateFormat fechaFormato = new SimpleDateFormat("DD/MM/YYYY HH:MM:SS");
+        SimpleDateFormat fechaFormato = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Label labelName = new Label(file.getName());
-        Label labelDate = new Label((fechaFormato.format(file.lastModified())));
+        Label labelDate = new Label(fechaFormato.format(file.lastModified()));
         labelName.setWrapText(true);
         labelName.setMaxWidth(ELEMENT_SIZE);
+        
         try {
             // LEEMOS LA FOTO CON EL BUFFERED IMAGE            
             BufferedImage bufferedImage = ImageIO.read(file);
