@@ -8,9 +8,9 @@ La implementació és lliure sempre i quant es compleixin els següents requisit
 
     1 - Requisits Funcionals (obligatoris)
 
-        Cal poder navegar per les diferents carpetes del PC. Seleccionar una carpeta i mostrar les miniatures de totes les imatges de la carpeta. D’entrada només cal que mostri les imatges en format jpg.
+        Cal poder navegar per les diferents carpetes del PC. Seleccionar una carpeta i mostrar les miniatures de totes les imatges de la carpeta. D’entrada només cal que mostri les imatges en format jpg. ----> FET
 
-        Les miniatures s’han de poder veure en almenys dues mides
+        Les miniatures s’han de poder veure en almenys dues mides ----> FET
 
             Es poden predefinir mides
 
@@ -18,7 +18,7 @@ La implementació és lliure sempre i quant es compleixin els següents requisit
 
         Cal poder seleccionar un grup d’imatges i moure-les a una altra carpeta
 
-        En la vista de miniatures cal poder veure característiques de la imatge, almenys el nom i la data de l’última modificació.
+        En la vista de miniatures cal poder veure característiques de la imatge, almenys el nom i la data de l’última modificació. ----> FET
 
         Cal poder seleccionar algunes imatges i marcar-les com a preferides.
 
@@ -32,7 +32,7 @@ La implementació és lliure sempre i quant es compleixin els següents requisit
 
         Cal poder filtrar les miniatures per les imatges preferides/totes, o per puntuacions.
 
-        S’ha de poder seleccionar una miniatura i mostrar la imatge seleccionada.
+        S’ha de poder seleccionar una miniatura i mostrar la imatge seleccionada. ----> FET
 
         Quna estem en la vista d’imatge cal poder navegar endavant i endarrere per les imatges de la carpeta, i anar mostrant les imatges.
 
