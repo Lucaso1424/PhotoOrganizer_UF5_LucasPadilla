@@ -8,9 +8,10 @@ La implementació és lliure sempre i quant es compleixin els següents requisit
 
     1 - Requisits Funcionals (obligatoris)
 
-        · Cal poder navegar per les diferents carpetes del PC. Seleccionar una carpeta i mostrar les miniatures de totes les imatges de la carpeta. D’entrada només cal que mostri les imatges en format jpg. --> FET
+        · Cal poder navegar per les diferents carpetes del PC. Seleccionar una carpeta i mostrar les miniatures de totes les imatges de la carpeta. 
+          D’entrada només cal que mostri les imatges en format jpg. --> FET
 
-        Les miniatures s’han de poder veure en almenys dues mides --> FET
+        · Les miniatures s’han de poder veure en almenys dues mides --> FET
 
             Es poden predefinir mides
 
