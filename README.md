@@ -33,9 +33,9 @@ La implementació és lliure sempre i quant es compleixin els següents requisit
 
         · Cal poder filtrar les miniatures per les imatges preferides/totes, o per puntuacions.
 
-        · S’ha de poder seleccionar una miniatura i mostrar la imatge seleccionada. ----> FET
+        · S’ha de poder seleccionar una miniatura i mostrar la imatge seleccionada. --> FET
 
-        · Quna estem en la vista d’imatge cal poder navegar endavant i endarrere per les imatges de la carpeta, i anar mostrant les imatges.
+        · Quan estem en la vista d’imatge cal poder navegar endavant i endarrere per les imatges de la carpeta, i anar mostrant les imatges.
 
     2 - Requisits optatius
 
