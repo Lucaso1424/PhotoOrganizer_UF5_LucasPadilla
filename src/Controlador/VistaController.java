@@ -19,12 +19,14 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -53,8 +55,6 @@ public class VistaController implements Initializable {
     @FXML
     private FlowPane flowPane2;
     @FXML
-    private ImageView image;
-    @FXML
     private TreeView<String> tree;
     @FXML
     private Text text11;
@@ -82,11 +82,21 @@ public class VistaController implements Initializable {
     private Text text13;
     @FXML
     private Text text131;
+    @FXML
+    private Button siguiente;
+    @FXML
+    private Button anterior;
+    @FXML
+    private Label namePreview;
+    @FXML
+    private Text datePreview;
     /**
      * Initializes the controller class.
      */
     // ARRAYLIST DE FILE PARA GUARDAR LAS IMÁGENES
     ArrayList<File> fotosJpg = new ArrayList<File>();
+    // ARRAYLIST DE LA CLASE ImageFolder PARA LA PREVIEW
+    ArrayList<ImageFolder> imageFolder = new ArrayList<>();
 
     // CONTADOR
     int contador = 0;
@@ -188,6 +198,8 @@ public class VistaController implements Initializable {
                     };
 
                     tree.setRoot(abrirCarpetas(opcion));
+
+                    // GESTIÓN DE FILAS Y COLUMNAS
                     // DECLARAMOS EL NUEVO ARRAYLIST PARA EL fotoJpg PARA EL FILTRO
                     fotosJpg = new ArrayList<File>();
                     int x = 0;
@@ -226,7 +238,7 @@ public class VistaController implements Initializable {
                     // AL ABRIR LA CARPETA SELECCIONADA
                     crearFotos();
                     System.out.println(opcion);
-                    
+
                     // CREAMOS UN NUEVO EVENTO DE RATON, PARA CAMBAIR LA MEDIDA DEL ELEMENT_SIZE
                     // Y LLAMAMOS DE NUEVO A LA FUNCIÓN PARA CREAR LAS FOTOS, PARA QUE LAS BORRE Y LAS
                     // CREE DE NUEVO LAS VBOX CON SUS MEDIDAS Y SUS IMAGENES
@@ -261,6 +273,7 @@ public class VistaController implements Initializable {
     private void crearFotos() {
         // HACEMOS UN CLEAR, CADA VEZ QUE VAYAMOS A RECARGAR UNA CARPETA
         tilePane1.getChildren().clear();
+        imageFolder.clear();
         contador = 0;
         // RECORREMOS EN UN BUCLE LAS FILAS COLUMNAS 
         for (int i = 0; i < numeroColumnas; i++) {
@@ -282,7 +295,7 @@ public class VistaController implements Initializable {
         if (fotosJpg.size() <= index) {
             System.out.println("Index out of bounds");
         }
-        
+
         // DECLARAMOS EN UN NUEVO FILE EL ARRAY DE FOTOS
         // PASANDOLE UN ENTERO, QUE ES EL CONTADOR DE LA FUNCION CREAR FOTOS
         File file = fotosJpg.get(index);
@@ -293,15 +306,15 @@ public class VistaController implements Initializable {
         Label labelDate = new Label(fechaFormato.format(file.lastModified()));
         labelName.setWrapText(true);
         labelName.setMaxWidth(ELEMENT_SIZE);
-        
+
         try {
             // LEEMOS LA FOTO CON EL BUFFERED IMAGE            
             BufferedImage bufferedImage = ImageIO.read(file);
             // PASAMOS LA URL A toString
-            Image image = new Image(file.toURI().toString());
+            Image imageVbox = new Image(file.toURI().toString());
 
             // SETEAMOS LA IMAGEN DEL imageView
-            imageView.setImage(image);
+            imageView.setImage(imageVbox);
             // AÑADIMOS LA MEDIDA DEL ELEMENT_SIZE, CON LOS setFitWidth Y setFitHeight
             imageView.setFitWidth(ELEMENT_SIZE);
             imageView.setFitHeight(ELEMENT_SIZE);
@@ -312,14 +325,23 @@ public class VistaController implements Initializable {
             // SETEAMOS LA PREVIEW DE LA IMAGEN DE LA CLASE ImageFolder
             a.setPreviewImage(imageView);
 
+            // HACEMOS EL SETTER DE LA RUTA DE lA IMAGEN
+            a.setPathImage(file);
+            // SETEAMOS LA IMAGEN image QUE GESTIONAMOS EN EL try
+            a.setImage(imageVbox);
+            a.setNombrePath(file.toURI().toString());
+            // AÑADIMOS EN EL NUEVO ARRAY LIST DE LA CLASE IMAGE FOLDER
+            // EL a, QUE ES EL OBJETO DE LA CLASE ImageFolder
+            imageFolder.add(a);
+
             // HACEMOS EL getPreviewImage, Y ACCEDEMOS AL EVENT HANDLER DEL MOUSE CLICKED
             a.getPreviewImage().setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent e) {
-                    // SETEAMOS LA IMAGEN image QUE GESTIONAMOS EN EL try
-                    a.setImage(image);
                     // SETEAMOS LA IMAGEN EN imageViewFotos (QUE ES EL PANEL DE ImageView DE LA VISTA)
                     // Y DENTRO HACEMOS UN getImage(); DE LA IMAGEN SETEADA DE LA LINEA DE ARRIBA
+                    namePreview.setText(labelName.getText());
+                    datePreview.setText(labelDate.getText());
                     imageViewFotos.setImage(a.getImage());
                 }
             });
@@ -356,6 +378,46 @@ public class VistaController implements Initializable {
         }
         // HACEMOS EL RETURN DEL DIRECTORIO
         return rootTree;
+    }
+
+    // REALIZAMOS EL SIGUIENTE CÓDIGO PARA EL ANTERIOR
+    @FXML
+    private void wakala(ActionEvent event) {
+        // RECORREMOS EL ARRAYLIST DE LA CLASE DE ImageFolder
+        for (int i = 0; i < imageFolder.size(); i++) {
+            // DECLARAMOS, SI IMAGEFOLDER DEL ARRAY, SI SU RUTA ES EL equals()
+            // DE EL LABEL DEL NOMBRE DE LA IMAGEN CON EL getText()
+            if (imageFolder.get(i).getPath().equals(namePreview.getText())) {
+                // RESTAREMOS UN -- CADA VEZ QUE RECORRA EL BUCLE PARA EL ARRAY
+                i--;
+                if (i == (-1)) {
+                    i = imageFolder.size() - 1;
+                }
+                // SETEAMOS LA RUTA DEL imageView DE LA IMAGEN, Y COGEMOS LA RUTA
+                // DE LA IMAGEN PASANDOLE LA i DEL BUCLE FOR
+                namePreview.setText(imageFolder.get(i).getPath());
+                // SETEAMOS LA IMAGEN EN LA PREVIEW
+                imageViewFotos.setImage(imageFolder.get(i).getImage());
+                break;
+            }
+        }
+    }
+    // REALIZAMOS LO MISMO PARA EL OTRO BOTÓN DE SIGUIENTE, PERO SUMANDOLO
+    // EN VEZ DE RESTARLO
+    @FXML
+    private void makelele(ActionEvent event) {
+        for (int i = 0; i < imageFolder.size(); i++) {
+            if (imageFolder.get(i).getPath().equals(namePreview.getText())) {
+                // SUMAREMOS UN ++ CADA VEZ QUE RECORRA EL BUCLE PARA EL ARRAY
+                i++;
+                if (i == imageFolder.size()) {
+                    i = 0;
+                }
+                namePreview.setText(imageFolder.get(i).getPath());
+                imageViewFotos.setImage(imageFolder.get(i).getImage());
+                break;
+            }
+        }
     }
 
 }
