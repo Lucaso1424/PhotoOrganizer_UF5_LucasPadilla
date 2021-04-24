@@ -25,12 +25,22 @@ public class ImageFolder {
     private String NombrePath;
     // DECLARAMOS UN STRING PARA LA FECHA DE LA IMAGEN
     private String NombreFecha;
+    // DECLARAMOS UN BOOLEANO PARA SABER SI ES FAVORITO O NO, LO INICIALIZAMOS EN FALSE
+    private boolean favImg;
+
+    public boolean isFavImg() {
+        return favImg;
+    }
+
+    public void setFavImg(boolean favImg) {
+        this.favImg = favImg;
+    }
 
     // SETEAMOS LA FECHA, HACIENDO UN SUBSTRING DE LA FECHA ENTERA, Y COGIENDO EL ULTIMO VALOR
     // CON EL lastIndexOf, RESTANDOLE 5 POSICIONES PARA QUE COJA EL DIA, MES Y AÑO DE TODA LA FECHA
     public String getNombreFecha() {
         String valor = NombreFecha.substring(NombreFecha.lastIndexOf("/") - 5);
-        
+
         // DECLARAMOS UN STRING PARA BORRAR EL ' QUE NOS DEJA AL FINAL DE LA FECHA
         String delete = "'";
         // UTILIZAMOS EL MÉTODO contains Y replaceAll, PASANDOLE COMO VALOR UN 
@@ -38,7 +48,7 @@ public class ImageFolder {
         if (valor.contains(delete)) {
             valor = valor.replaceAll(delete, "");
         }
-        
+
         // DEVOLVEMOS EL VALOR
         return valor;
     }

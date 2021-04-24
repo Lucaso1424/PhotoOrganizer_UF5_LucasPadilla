@@ -15,9 +15,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -96,6 +98,10 @@ public class VistaController implements Initializable {
     private Button guardarFavs;
     @FXML
     private Button eliminarFavs;
+    @FXML
+    private Button imgFavButton1;
+    @FXML
+    private Button imgFavButton;
     /**
      * Initializes the controller class.
      */
@@ -103,6 +109,8 @@ public class VistaController implements Initializable {
     ArrayList<File> fotosJpg = new ArrayList<File>();
     // ARRAYLIST DE LA CLASE ImageFolder PARA LA PREVIEW
     ArrayList<ImageFolder> imageFolder = new ArrayList<>();
+    // ARRAYLIST DE TIPO STRING PARA LAS IMAGENES FAV
+    ArrayList<String> imgFav = new ArrayList<>();
 
     // CONTADOR
     int contador = 0;
@@ -119,6 +127,7 @@ public class VistaController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        outputFavInitialize();
         // DEFINIMOS LA CARPETA DEL PROYECTO
         File file = new File(System.getProperty("user.dir"));
         // DEFINIMOS EL NOMBRE DE LA CARPETA
@@ -316,6 +325,9 @@ public class VistaController implements Initializable {
         Label labelDate = new Label(fechaFormato.format(file.lastModified()));
         labelName.setWrapText(true);
         labelName.setMaxWidth(ELEMENT_SIZE);
+        labelDate.setWrapText(true);
+        labelDate.setMaxWidth(ELEMENT_SIZE);
+        a.setFavImg(false);
 
         try {
             // LEEMOS LA FOTO CON EL BUFFERED IMAGE            
@@ -362,6 +374,79 @@ public class VistaController implements Initializable {
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
+
+        // CREAMOS UNA NUEVA CAJA VBox
+        VBox vbox = new VBox();
+        // AÑADIMOS CON EL getChildren() EL .add() DE LA PREVIEW DE LA IMAGEN 
+        // CON EL imageView DE ARRIBA
+        vbox.getChildren().add(imageView);
+        vbox.getChildren().add(labelName);
+        vbox.getChildren().add(labelDate);
+
+        // LO DECLARAMOS COMO NULO Y LA DEVOLVEMOS PARA  
+        // VOLVER A EJECUTAR LA FUNCIÓN Y QUE SE IMPRIMAN LAS FOTOS EN BUCLE
+        imageView = null;
+        return vbox;
+    }
+
+    public VBox crearVboxFav(int index, ArrayList bobobo) {
+        // CREAMOS UN OBJETO ImageView PARA VISUALIZAR LA FOTO        
+        ImageView imageView = new ImageView();
+        // CREAREMOS EL OBJETO ImageFolder PARA ACCEDER A LA CLASE ImageFolder
+        ImageFolder a = new ImageFolder();
+
+        if (imgFav.size() <= index) {
+            System.out.println("Index out of bounds");
+        }
+        
+        // DECLARAMOS EN UN NUEVO FILE EL ARRAY DE FOTOS
+        // PASANDOLE UN ENTERO, QUE ES EL CONTADOR DE LA FUNCION CREAR FOTOS
+        File file = new File(imgFav.get(index).replace("file:\\", ""));
+
+        // CREAMOS UN NUEVO OBJETO DE DATE FORMAR, Y LE PASAMOS POR PARAMETROS LA FECHA Y HORA
+        SimpleDateFormat fechaFormato = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Label labelName = new Label(file.getName());
+        Label labelDate = new Label(fechaFormato.format(file.lastModified()));
+        // FORMATEAMOS EL LABEL DE LA FECHA Y EL NOMBRE
+        labelName.setWrapText(true);
+        labelName.setMaxWidth(ELEMENT_SIZE);
+        labelDate.setWrapText(true);
+        labelDate.setMaxWidth(ELEMENT_SIZE);
+
+        // PASAMOS LA URL A toString
+        Image imageVbox = new Image(file.toString().replace("\\", "/"));
+
+        // SETEAMOS LA IMAGEN DEL imageView
+        imageView.setImage(imageVbox);
+        // AÑADIMOS LA MEDIDA DEL ELEMENT_SIZE, CON LOS setFitWidth Y setFitHeight
+        imageView.setFitWidth(ELEMENT_SIZE);
+        imageView.setFitHeight(ELEMENT_SIZE);
+
+        imageView.setSmooth(true);
+        imageView.setCache(true);
+
+        // SETEAMOS LA PREVIEW DE LA IMAGEN DE LA CLASE ImageFolder
+        a.setPreviewImage(imageView);
+
+        // HACEMOS EL SETTER DE LA RUTA DE lA IMAGEN
+        a.setPathImage(file);
+        // SETEAMOS LA FECHA Y LO PASAMOS A toString
+        a.setNombreFecha(labelDate.toString());
+        // SETEAMOS LA IMAGEN image QUE GESTIONAMOS EN EL try
+        a.setImage(imageVbox);
+        a.setNombrePath(file.toString());
+
+        // HACEMOS EL getPreviewImage, Y ACCEDEMOS AL EVENT HANDLER DEL MOUSE CLICKED
+        a.getPreviewImage().setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+                // SETEAMOS LA IMAGEN EN imageViewFotos (QUE ES EL PANEL DE ImageView DE LA VISTA)
+                // Y DENTRO HACEMOS UN getImage(); DE LA IMAGEN SETEADA DE LA LINEA DE ARRIBA
+                namePreview.setText(labelName.getText());
+                datePreview.setText(labelDate.getText());
+                imageViewFotos.setImage(a.getImage());
+            }
+        });
 
         // CREAMOS UNA NUEVA CAJA VBox
         VBox vbox = new VBox();
@@ -435,23 +520,128 @@ public class VistaController implements Initializable {
         }
     }
 
-    @FXML
-    private void saveFavs(ActionEvent event) {       
+    private void saveFavs() {
+        ArrayList<String> bobobo = imgFav;
         try {
             FileOutputStream fileOut = new FileOutputStream("imgFav.ser");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(imageFolder);
+            out.writeObject(bobobo);
             out.close();
             fileOut.close();
-            System.out.printf("Se ha serializado las fav img's en /Controlador/imgFav.ser");
+            System.out.printf("Se ha serializado las fav img's en /Controlador/imgFav.ser" + "\n");
         } catch (IOException i) {
             i.printStackTrace();
         }
     }
 
+    private void outputFav() {
+        ArrayList<String> bobobo = new ArrayList<>();
+        try {
+            FileInputStream input = new FileInputStream("imgFav.ser");
+            ObjectInputStream output = new ObjectInputStream(input);
+            bobobo = (ArrayList) output.readObject();
+            output.close();
+            input.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+            return;
+        } catch (ClassNotFoundException c) {
+            c.printStackTrace();
+            return;
+        }
+        for (int i = 0; i < bobobo.size(); i++) {
+            for (int j = 0; j < imageFolder.size(); j++) {
+                if (imageFolder.get(j).getPath().equals(bobobo.get(i))) {
+                    imageFolder.get(j).setFavImg(true);
+                }
+            }
+        }
+    }
+
+    private void outputFavInitialize() {
+        ArrayList<String> bobobo = new ArrayList<>();
+        try {
+            FileInputStream input = new FileInputStream("imgFav.ser");
+            ObjectInputStream output = new ObjectInputStream(input);
+            bobobo = (ArrayList) output.readObject();
+            output.close();
+            input.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+            return;
+        } catch (ClassNotFoundException c) {
+            System.out.println("No se ha encontrado la clase");
+            c.printStackTrace();
+            return;
+        }
+        for (int i = 0; i < bobobo.size(); i++) {
+            imgFav.add(bobobo.get(i));
+        }
+    }
+
+    private void mostrarOutput() {
+        tilePane1.getChildren().clear();
+        contador = 0;
+        ArrayList<String> bobobo = new ArrayList<>();
+        try {
+            FileInputStream input = new FileInputStream("imgFav.ser");
+            ObjectInputStream output = new ObjectInputStream(input);
+            bobobo = (ArrayList) output.readObject();
+            output.close();
+            input.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+            return;
+        } catch (ClassNotFoundException c) {
+            System.out.println("No se ha encontrado la clase");
+            c.printStackTrace();
+            return;
+        }
+        for (int i = 0; i < bobobo.size(); i++) {
+            crearVboxFav(i, bobobo);
+            tilePane1.getChildren().add(crearVboxFav(i, bobobo));
+        }
+    }
+
     @FXML
-    private void deleteFavs(ActionEvent event) {
-        
+    private void onclickFavs(ActionEvent event) {
+        for (int i = 0; i < imageFolder.size(); i++) {
+            if (imageFolder.get(i).getPath().equals(namePreview.getText())) {
+                if (!imageFolder.get(i).isFavImg()) {
+                    imgFav.add(imageFolder.get(i).getNombrePath());
+                    imageFolder.get(i).setFavImg(true);
+                }
+            }
+        }
+        saveFavs();
+        outputFav();
+        mostrarOutput();
+    }
+
+//    @FXML
+//    private void deleteFav(ActionEvent event) {
+//        for (int i = 0; i < imageFolder.size(); i++) {
+//            if (imageFolder.get(i).getPath().equals(namePreview.getText())) {
+//                if (imageFolder.get(i).isFavImg()) {
+//                    imgFav.remove(imageFolder.get(i).getNombrePath());
+//                    imageFolder.get(i).setFavImg(false);
+//                    break;
+//                }
+//            }
+//        }
+//        saveFavs();
+//        outputFav();
+//        mostrarOutput();
+//    }
+
+    @FXML
+    private void filtroImgFav(ActionEvent event) {
+        mostrarOutput();
+    }
+
+    @FXML
+    private void filtroDirectorioOpened(ActionEvent event) {
+        crearFotos();
     }
 
 }
