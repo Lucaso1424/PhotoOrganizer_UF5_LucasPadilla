@@ -15,8 +15,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import javafx.collections.ObservableList;
@@ -90,6 +92,10 @@ public class VistaController implements Initializable {
     private Label namePreview;
     @FXML
     private Text datePreview;
+    @FXML
+    private Button guardarFavs;
+    @FXML
+    private Button eliminarFavs;
     /**
      * Initializes the controller class.
      */
@@ -106,7 +112,9 @@ public class VistaController implements Initializable {
     // NUMERO DE COLUMNAS PARA TILE PANE (3 COLUMNAS)
     private int numeroColumnas = 3;
 
+    // CREAMOS LA MEDIDA DEL ELEMENTO DE CADA FOTO
     private static double ELEMENT_SIZE = 200;
+    // CREAMOS LA SEPARACIÓN DE CADA ELEMENTO, QUE SERÁ LA MEDIDA ENTRE 10
     private static final double GAP = ELEMENT_SIZE / 10;
 
     @Override
@@ -122,9 +130,11 @@ public class VistaController implements Initializable {
         // CREANDO EVENTO DEL BOTÓN
         ActionEvent e = new ActionEvent();
         eventoBoton(e, tree);
-
+        
+        // SETEAMOS LAS COLUMNAS Y FILAS
         tilePane1.setPrefColumns(numeroColumnas);
         tilePane1.setPrefRows(numeroFilas);
+        // SETEAMOS LAS SEPARACIONES LATERALES Y SUPERIORES PARA EL Tile Pane
         tilePane1.setHgap(GAP);
         tilePane1.setVgap(GAP);
     }
@@ -329,12 +339,12 @@ public class VistaController implements Initializable {
             a.setPathImage(file);
             // SETEAMOS LA FECHA Y LO PASAMOS A toString
             a.setNombreFecha(labelDate.toString());
-//            System.out.println(a.getNombreFecha());
             // SETEAMOS LA IMAGEN image QUE GESTIONAMOS EN EL try
             a.setImage(imageVbox);
             a.setNombrePath(file.toURI().toString());
             // AÑADIMOS EN EL NUEVO ARRAY LIST DE LA CLASE IMAGE FOLDER
-            // EL a, QUE ES EL OBJETO DE LA CLASE ImageFolder
+            // EL a, QUE ES EL OBJETO DE LA CLASE ImageFolder, Y AÑADIMOS TODAS LAS FOTOS
+            // EN ESE ARRAY LIST
             imageFolder.add(a);
 
             // HACEMOS EL getPreviewImage, Y ACCEDEMOS AL EVENT HANDLER DEL MOUSE CLICKED
@@ -422,6 +432,21 @@ public class VistaController implements Initializable {
                 imageViewFotos.setImage(imageFolder.get(i).getImage());
                 break;
             }
+        }
+    }
+
+    public void saveFavsImg() {
+//        image
+        
+        try {
+            FileOutputStream fileOut = new FileOutputStream("imgFav.ser");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(imageFolder);
+            out.close();
+            fileOut.close();
+            System.out.printf("Se ha serializado las fav img's en /Controlador/imgFav.ser");
+        } catch (IOException i) {
+            i.printStackTrace();
         }
     }
 

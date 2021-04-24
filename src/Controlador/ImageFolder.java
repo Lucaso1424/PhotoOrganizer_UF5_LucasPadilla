@@ -30,6 +30,16 @@ public class ImageFolder {
     // CON EL lastIndexOf, RESTANDOLE 5 POSICIONES PARA QUE COJA EL DIA, MES Y AÑO DE TODA LA FECHA
     public String getNombreFecha() {
         String valor = NombreFecha.substring(NombreFecha.lastIndexOf("/") - 5);
+        
+        // DECLARAMOS UN STRING PARA BORRAR EL ' QUE NOS DEJA AL FINAL DE LA FECHA
+        String delete = "'";
+        // UTILIZAMOS EL MÉTODO contains Y replaceAll, PASANDOLE COMO VALOR UN 
+        // STRING DECLARADO Y DESPUÉS LA SALIDA, UN STRING VACIÓ
+        if (valor.contains(delete)) {
+            valor = valor.replaceAll(delete, "");
+        }
+        
+        // DEVOLVEMOS EL VALOR
         return valor;
     }
 
