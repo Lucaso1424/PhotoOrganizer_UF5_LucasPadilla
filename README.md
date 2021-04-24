@@ -27,7 +27,7 @@ La implementació és lliure sempre i quant es compleixin els següents requisit
 
             Una puntuació amb estrelles o numèrica.
 
-            O simplement una selecció binària, preferida/no preferida. Una estrelleta o similar…​
+            O simplement una selecció binària, preferida/no preferida. Una estrelleta o similar…
 
         · La selecció d’imatges preferides es manté si es tanca l’aplicació.
 
@@ -35,7 +35,7 @@ La implementació és lliure sempre i quant es compleixin els següents requisit
 
         · S’ha de poder seleccionar una miniatura i mostrar la imatge seleccionada. --> FET
 
-        · Quan estem en la vista d’imatge cal poder navegar endavant i endarrere per les imatges de la carpeta, i anar mostrant les imatges.
+        · Quan estem en la vista d’imatge cal poder navegar endavant i endarrere per les imatges de la carpeta, i anar mostrant les imatges. --> FET
 
     2 - Requisits optatius
 
