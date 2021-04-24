@@ -130,7 +130,7 @@ public class VistaController implements Initializable {
         // CREANDO EVENTO DEL BOTÓN
         ActionEvent e = new ActionEvent();
         eventoBoton(e, tree);
-        
+
         // SETEAMOS LAS COLUMNAS Y FILAS
         tilePane1.setPrefColumns(numeroColumnas);
         tilePane1.setPrefRows(numeroFilas);
@@ -435,9 +435,8 @@ public class VistaController implements Initializable {
         }
     }
 
-    public void saveFavsImg() {
-//        image
-        
+    @FXML
+    private void saveFavs(ActionEvent event) {       
         try {
             FileOutputStream fileOut = new FileOutputStream("imgFav.ser");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
@@ -448,6 +447,11 @@ public class VistaController implements Initializable {
         } catch (IOException i) {
             i.printStackTrace();
         }
+    }
+
+    @FXML
+    private void deleteFavs(ActionEvent event) {
+        
     }
 
 }

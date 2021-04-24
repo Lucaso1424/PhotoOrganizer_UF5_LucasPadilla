@@ -86,7 +86,7 @@
                   <Font name="System Bold Italic" size="16.0" />
                </font>
             </Button>
-            <Button fx:id="guardarFavs" mnemonicParsing="false" onAction="#wakala" text="Añadir favs">
+            <Button fx:id="guardarFavs" mnemonicParsing="false" onAction="#saveFavs" text="Añadir favs">
                <font>
                   <Font name="System Bold Italic" size="13.0" />
                </font>
@@ -94,7 +94,7 @@
                   <Insets left="24.0" top="20.0" />
                </FlowPane.margin>
             </Button>
-            <Button fx:id="eliminarFavs" mnemonicParsing="false" onAction="#wakala" text="Eliminar favs">
+            <Button fx:id="eliminarFavs" mnemonicParsing="false" onAction="#deleteFavs" text="Eliminar favs">
                <font>
                   <Font name="System Bold Italic" size="13.0" />
                </font>
@@ -104,7 +104,7 @@
             </Button>
             <ImageView fx:id="imageViewFotos" fitHeight="224.0" fitWidth="256.0" pickOnBounds="true" preserveRatio="true">
                <FlowPane.margin>
-                  <Insets left="10.0" top="10.0" />
+                  <Insets left="3.0" top="10.0" />
                </FlowPane.margin>
             </ImageView>
             <Text fx:id="datePreview" strokeType="OUTSIDE" strokeWidth="0.0">
