@@ -14,6 +14,7 @@ import javafx.scene.image.ImageView;
  * @author lucas
  */
 public class ImageFolder {
+
     // CREAMOS LA IMAGEPREVIEW
     private ImageView previewImage;
     // CREAMOS OBJETO IMAGE
@@ -22,6 +23,19 @@ public class ImageFolder {
     private File pathImage;
     // DECLARAMOS UN STRING PARA LA RUTA DE LA IMAGEN EN EL EVENTO DE BOTÓN
     private String NombrePath;
+    // DECLARAMOS UN STRING PARA LA FECHA DE LA IMAGEN
+    private String NombreFecha;
+
+    // SETEAMOS LA FECHA, HACIENDO UN SUBSTRING DE LA FECHA ENTERA, Y COGIENDO EL ULTIMO VALOR
+    // CON EL lastIndexOf, RESTANDOLE 5 POSICIONES PARA QUE COJA EL DIA, MES Y AÑO DE TODA LA FECHA
+    public String getNombreFecha() {
+        String valor = NombreFecha.substring(NombreFecha.lastIndexOf("/") - 5);
+        return valor;
+    }
+
+    public void setNombreFecha(String NombreFecha) {
+        this.NombreFecha = NombreFecha;
+    }
 
     public String getNombrePath() {
         return NombrePath;
@@ -55,9 +69,11 @@ public class ImageFolder {
     public void setImage(Image image) {
         this.image = image;
     }
-    
+
+    // SETEAMOS LA PATH, HACIENDO UN SUBSTRING DE LA PATH ENTERA, Y COGIENDO EL ULTIMO VALOR
+    // CON EL lastIndexOf, SUMANDOLE 1 PARA QUE COJA EL ULTIMO STRING, QUE ES EL NOMBRE DE LA IMAGEN
     public String getPath() {
-        String valor = NombrePath.substring(NombrePath.lastIndexOf("/")+1);
+        String valor = NombrePath.substring(NombrePath.lastIndexOf("/") + 1);
         return valor;
     }
 }

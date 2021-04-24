@@ -179,7 +179,7 @@ public class VistaController implements Initializable {
                     Alert alerta = new Alert(AlertType.ERROR);
                     // MOSTRAMOS MENSAJE DE ALERTA
                     alerta.setHeaderText("No se puede abrir el directorio.");
-                    alerta.setContentText("El archivo no es válido.");
+                    alerta.setContentText("Elige otra carpeta.");
                     alerta.showAndWait();
                 } else {
                     // HACEMOS EL SET ROOT DE LA CARPETA PADRE, LLAMANDO A LA FUNCIÓN DE ABRIR CARPETAS,
@@ -327,6 +327,9 @@ public class VistaController implements Initializable {
 
             // HACEMOS EL SETTER DE LA RUTA DE lA IMAGEN
             a.setPathImage(file);
+            // SETEAMOS LA FECHA Y LO PASAMOS A toString
+            a.setNombreFecha(labelDate.toString());
+//            System.out.println(a.getNombreFecha());
             // SETEAMOS LA IMAGEN image QUE GESTIONAMOS EN EL try
             a.setImage(imageVbox);
             a.setNombrePath(file.toURI().toString());
@@ -371,9 +374,6 @@ public class VistaController implements Initializable {
             if (files.isDirectory()) {
                 // SI ES UN DIRECTORIO, AÑADE LA CARPETA EN LA PADRE EN EL rootTree CON EL .add()
                 rootTree.getChildren().add(abrirCarpetas(files));
-            } else {
-                // SI NO ES UN DIRECTORIO, AÑADE EL ITEM DEL ARCHIVO CON EL .add() Y EL .getName()
-                rootTree.getChildren().add(new TreeItem<String>(files.getName()));
             }
         }
         // HACEMOS EL RETURN DEL DIRECTORIO
@@ -394,14 +394,18 @@ public class VistaController implements Initializable {
                     i = imageFolder.size() - 1;
                 }
                 // SETEAMOS LA RUTA DEL imageView DE LA IMAGEN, Y COGEMOS LA RUTA
-                // DE LA IMAGEN PASANDOLE LA i DEL BUCLE FOR
+                // DE LA IMAGEN PASANDOLE LA i DEL BUCLE FOR, Y HACEMOS EL getPath
                 namePreview.setText(imageFolder.get(i).getPath());
+                // HACEMOS LO MISMO PASANDOLE EL getNombreFecha Y HACEMOS EL setText
+                // PASANDOLE LA i DEL BUCLE PARA QUE LO RECORRA
+                datePreview.setText(imageFolder.get(i).getNombreFecha());
                 // SETEAMOS LA IMAGEN EN LA PREVIEW
                 imageViewFotos.setImage(imageFolder.get(i).getImage());
                 break;
             }
         }
     }
+
     // REALIZAMOS LO MISMO PARA EL OTRO BOTÓN DE SIGUIENTE, PERO SUMANDOLO
     // EN VEZ DE RESTARLO
     @FXML
@@ -414,6 +418,7 @@ public class VistaController implements Initializable {
                     i = 0;
                 }
                 namePreview.setText(imageFolder.get(i).getPath());
+                datePreview.setText(imageFolder.get(i).getNombreFecha());
                 imageViewFotos.setImage(imageFolder.get(i).getImage());
                 break;
             }
