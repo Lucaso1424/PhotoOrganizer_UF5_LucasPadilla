@@ -27,6 +27,16 @@ public class ImageFolder {
     private String NombreFecha;
     // DECLARAMOS UN BOOLEANO PARA SABER SI ES FAVORITO O NO, LO INICIALIZAMOS EN FALSE
     private boolean favImg;
+    // DECLARAMOS BOOLEANO PARA SELECCIONAR Y MOVER ARCHIVOS
+    private boolean selectedFoto;
+
+    public boolean isSelectedFoto() {
+        return selectedFoto;
+    }
+
+    public void setSelectedFoto(boolean selectedFoto) {
+        this.selectedFoto = selectedFoto;
+    }
 
     public boolean isFavImg() {
         return favImg;

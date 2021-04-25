@@ -21,9 +21,12 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
@@ -102,6 +105,8 @@ public class VistaController implements Initializable {
     private Button imgFavButton;
     @FXML
     private Button quitar;
+    @FXML
+    private Button moveImg;
     /**
      * Initializes the controller class.
      */
@@ -363,6 +368,12 @@ public class VistaController implements Initializable {
             a.getPreviewImage().setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent e) {
+                    // SETEAMOS EN TRUE SI SELECCIONAMOS Y EN FALSE SI NO
+                    if (a.isSelectedFoto()) {
+                        a.setSelectedFoto(false);
+                    } else {
+                        a.setSelectedFoto(true);
+                    }
                     // SETEAMOS LA IMAGEN EN imageViewFotos (QUE ES EL PANEL DE ImageView DE LA VISTA)
                     // Y DENTRO HACEMOS UN getImage(); DE LA IMAGEN SETEADA DE LA LINEA DE ARRIBA
                     namePreview.setText(labelName.getText());
@@ -528,7 +539,6 @@ public class VistaController implements Initializable {
             out.writeObject(bobobo);
             out.close();
             fileOut.close();
-//            System.out.printf("Se ha serializado las fav img's en /Controlador/imgFav.ser" + "\n");
         } catch (IOException i) {
             i.printStackTrace();
         }
@@ -641,4 +651,51 @@ public class VistaController implements Initializable {
         crearFotos();
     }
 
+    @FXML
+    private void moveImgAction(ActionEvent event) {
+        DirectoryChooser fileC = new DirectoryChooser();
+        // DECLARAMOS COMO DIRECTORIO INICIAL, user.home                
+        fileC.setInitialDirectory(new File(System.getProperty("user.home")));
+
+        // LE PASAMOS UN STAGE PARA ABRIR LA CARPETA DE IMAGENES
+        Stage primaryStage = new Stage();
+        // LE PASAMOS LA OPCION DEL primaryStage                
+        File opcion = fileC.showDialog(primaryStage);
+        // GESTIONAMOS UN CASO DE PRUEBA, SI LA OPCIÓN ES NULA O NO ES UN DIRECTORIO                
+        if (opcion == null || !opcion.isDirectory()) {
+            // CREAMOS UNA ALERTA
+            Alert alerta = new Alert(AlertType.ERROR);
+            // MOSTRAMOS MENSAJE DE ALERTA
+            alerta.setHeaderText("No se puede abrir el directorio.");
+            alerta.setContentText("Elige otra carpeta.");
+            alerta.showAndWait();
+        } else {
+            // RECORREMOS EL ARRAY ENTERO DE imageFolder.size()
+            for (int i = 0; i < imageFolder.size(); i++) {
+                // DECLARAMOS QUE SI SELECCIONAMOS LA FOTO Y ESTÁ EN TRUE:
+                if (imageFolder.get(i).isSelectedFoto()) {
+                    // DECLARAMOS EN UN NUEVO File QUE NOS COJA LA RUTA DE LA FOTO 
+                    File file = new File(imageFolder.get(i).getNombrePath());
+                    
+                    // DECLARAMOS EN UN OBJETO Path LA RUTA DE LA IMAGEN, QUITANDO EL file:\\ CON EL .replace()
+                    Path pathToFile = FileSystems.getDefault().getPath(file.getPath().replace("file:\\", ""));
+                    // DECLARAMOS EN UN OBJETO Path, EL DIRECTORIO QUE QUEREMOS CAMBIAR, CON EL getAbsolutePath, 
+                    // Y AÑADIENDOLE LA FOTO RECORRIDA MÁS EL getPath
+                    Path ruta = FileSystems.getDefault().getPath(opcion.getAbsolutePath() + "\\" + imageFolder.get(i).getPath());
+                    // EN EL TRY, UTILIZAREMOS 
+                    try {
+                        Files.move(pathToFile, ruta, StandardCopyOption.REPLACE_EXISTING);
+                        abrirCarpetas(opcion);
+                    } catch (IOException e) {
+                        System.out.println(pathToFile);
+                        System.out.println(ruta);
+                        System.out.println(opcion.getAbsolutePath());
+                        System.out.println(e);
+                    }
+                }
+            }
+        }
+        tree.setRoot(abrirCarpetas(opcion));
+        crearVbox(contador);
+    }
 }

@@ -66,6 +66,11 @@
                   <Font name="Yu Gothic Medium" size="18.0" />
                </font>
             </Text>
+            <Button fx:id="moveImg" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#moveImgAction" text="Mover imágen" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold Italic" size="12.0" />
+               </font>
+            </Button>
          </children>
       </AnchorPane>
       <FlowPane fx:id="flowPane2" layoutX="1058.0" layoutY="35.0" prefHeight="790.0" prefWidth="263.0" style="-fx-background-color: e9ff7b;">
@@ -102,12 +107,15 @@
                   <Font name="System Bold Italic" size="16.0" />
                </font>
             </Button>
-            <Button fx:id="quitar" mnemonicParsing="false" onAction="#quitarFavs" text="quitar">
+            <Button fx:id="quitar" mnemonicParsing="false" onAction="#quitarFavs" text="Quitar fav">
                <font>
                   <Font name="System Bold Italic" size="13.0" />
                </font>
+               <FlowPane.margin>
+                  <Insets left="40.0" top="20.0" />
+               </FlowPane.margin>
             </Button>
-            <Button fx:id="guardarFavs" mnemonicParsing="false" onAction="#onclickFavs" text="Añadir/Quitar favs">
+            <Button fx:id="guardarFavs" mnemonicParsing="false" onAction="#onclickFavs" text="Añadir fav">
                <font>
                   <Font name="System Bold Italic" size="13.0" />
                </font>
