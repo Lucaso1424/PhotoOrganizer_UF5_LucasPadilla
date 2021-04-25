@@ -106,6 +106,8 @@ public class VistaController implements Initializable {
     private Button quitar;
     @FXML
     private Button moveImg;
+    @FXML
+    private Text favText;
     /**
      * Initializes the controller class.
      */
@@ -307,7 +309,7 @@ public class VistaController implements Initializable {
             }
         }
         // HACEMOS EL RETURN DEL DIRECTORIO
-        return rootTree;            
+        return rootTree;
     }
 
     private void crearFotos() {
@@ -341,14 +343,16 @@ public class VistaController implements Initializable {
         File file = fotosJpg.get(index);
 
         // CREAMOS UN NUEVO OBJETO DE DATE FORMAR, Y LE PASAMOS POR PARAMETROS LA FECHA Y HORA
-        SimpleDateFormat fechaFormato = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Label labelName = new Label(file.getName());
-        Label labelDate = new Label(fechaFormato.format(file.lastModified()));
+        Label labelDate = new Label(dateFormat.format(file.lastModified()));
         labelName.setWrapText(true);
         labelName.setMaxWidth(ELEMENT_SIZE);
         labelDate.setWrapText(true);
         labelDate.setMaxWidth(ELEMENT_SIZE);
+
         a.setFavImg(false);
+        favText.setText("NO ES UNA IMÁGEN FAVORITA");
 
         try {
             // LEEMOS LA FOTO CON EL BUFFERED IMAGE            
@@ -395,6 +399,15 @@ public class VistaController implements Initializable {
                     namePreview.setText(labelName.getText());
                     datePreview.setText(labelDate.getText());
                     imageViewFotos.setImage(a.getImage());
+
+                    // RECORREMOS EL ARRAY DE imageFolder.size(), Y LUEGO
+                    // LO GESTIONAMOS CON UN if VALIDANDO EL NOMBRE Y LA PREVIEW
+                    for (int i = 0; i < imageFolder.size(); i++) {
+                        if (imageFolder.get(i).getPath().equals(namePreview.getText())) {
+                            // DECLARAREMOS QUE EL contador ES i PARA UTILIZARLO
+                            contador = i;
+                        }
+                    }
                 }
             });
 
@@ -427,22 +440,25 @@ public class VistaController implements Initializable {
         }
         // DECLARAMOS EN UN NUEVO FILE EL ARRAY DE FOTOS
         // PASANDOLE UN ENTERO, QUE ES EL CONTADOR DE LA FUNCION CREAR FOTOS
+
         File file = new File(imgFav.get(index).replace("file:\\", ""));
 
         // CREAMOS UN NUEVO OBJETO DE DATE FORMAR, Y LE PASAMOS POR PARAMETROS LA FECHA Y HORA
-        SimpleDateFormat fechaFormato = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Label labelName = new Label(file.getName());
-        Label labelDate = new Label(fechaFormato.format(file.lastModified()));
+//        Label labelDate = new Label(dateFormat.format(file.lastModified()));
+        Label labelDate = new Label(dateFormat.format(file.lastModified()));
         // FORMATEAMOS EL LABEL DE LA FECHA Y EL NOMBRE
+        // CREAMOS UN NUEVO OBJETO DE DATE FORMAR, Y LE PASAMOS POR PARAMETROS LA FECHA Y HORA
         labelName.setWrapText(true);
         labelName.setMaxWidth(ELEMENT_SIZE);
         labelDate.setWrapText(true);
         labelDate.setMaxWidth(ELEMENT_SIZE);
-        a.setFavImg(false);
+        a.setFavImg(true);
+        favText.setText("ES UNA IMÁGEN FAVORITA");
 
-        // PASAMOS LA URL A toString
+        // PASAMOS LA URL A toString, HACIENDO EL REPLACE DE LAS RUTAS
         Image imageVbox = new Image(file.toString().replace("\\", "/"));
-
         // SETEAMOS LA IMAGEN DEL imageView
         imageView.setImage(imageVbox);
         // AÑADIMOS LA MEDIDA DEL ELEMENT_SIZE, CON LOS setFitWidth Y setFitHeight
@@ -472,6 +488,14 @@ public class VistaController implements Initializable {
                 namePreview.setText(labelName.getText());
                 datePreview.setText(labelDate.getText());
                 imageViewFotos.setImage(a.getImage());
+
+                // RECORREMOS EL ARRAY DE imgFav(), Y LUEGO
+                // LO GESTIONAMOS CON UN if VALIDANDO EL NOMBRE Y LA PREVIEW
+                for (int i = 0; i < imgFav.size(); i++) {
+                    if (imgFav.get(i).substring(imgFav.get(i).lastIndexOf("/") + 1).equals(namePreview.getText())) {
+                        contador = i;
+                    }
+                }
             }
         });
 
@@ -492,45 +516,38 @@ public class VistaController implements Initializable {
     // REALIZAMOS EL SIGUIENTE CÓDIGO PARA EL ANTERIOR
     @FXML
     private void wakala(ActionEvent event) {
-        // RECORREMOS EL ARRAYLIST DE LA CLASE DE ImageFolder
-        for (int i = 0; i < imageFolder.size(); i++) {
-            // DECLARAMOS, SI IMAGEFOLDER DEL ARRAY, SI SU RUTA ES EL equals()
-            // DE EL LABEL DEL NOMBRE DE LA IMAGEN CON EL getText()
-            if (imageFolder.get(i).getPath().equals(namePreview.getText())) {
-                // RESTAREMOS UN -- CADA VEZ QUE RECORRA EL BUCLE PARA EL ARRAY
-                i--;
-                if (i == (-1)) {
-                    i = imageFolder.size() - 1;
-                }
-                // SETEAMOS LA RUTA DEL imageView DE LA IMAGEN, Y COGEMOS LA RUTA
-                // DE LA IMAGEN PASANDOLE LA i DEL BUCLE FOR, Y HACEMOS EL getPath
-                namePreview.setText(imageFolder.get(i).getPath());
-                // HACEMOS LO MISMO PASANDOLE EL getNombreFecha Y HACEMOS EL setText
-                // PASANDOLE LA i DEL BUCLE PARA QUE LO RECORRA
-                datePreview.setText(imageFolder.get(i).getNombreFecha());
-                // SETEAMOS LA IMAGEN EN LA PREVIEW
-                imageViewFotos.setImage(imageFolder.get(i).getImage());
-                break;
+        // DECLARAMOS, SI IMAGEFOLDER DEL ARRAY, SI SU RUTA ES EL equals()
+        // DE EL LABEL DEL NOMBRE DE LA IMAGEN CON EL getText(), PASANDO EL CONTADOR
+        if (imageFolder.get(contador).getPath().equals(namePreview.getText())) {
+            // RESTAREMOS UN -- CADA VEZ QUE SE EJECUTE EL int DEL CONTADOR
+            contador--;
+            if (contador == (-1)) {
+                contador = imageFolder.size() - 1;
             }
+            // SETEAMOS LA RUTA DEL imageView DE LA IMAGEN, Y COGEMOS LA RUTA
+            // DE LA IMAGEN PASANDOLE LA i DEL BUCLE FOR, Y HACEMOS EL getPath
+            namePreview.setText(imageFolder.get(contador).getPath());
+            // HACEMOS LO MISMO PASANDOLE EL getNombreFecha Y HACEMOS EL setText
+            // PASANDOLE LA i DEL BUCLE PARA QUE LO RECORRA
+            datePreview.setText(imageFolder.get(contador).getNombreFecha());
+            // SETEAMOS LA IMAGEN EN LA PREVIEW
+            imageViewFotos.setImage(imageFolder.get(contador).getImage());
         }
     }
 
-    // REALIZAMOS LO MISMO PARA EL OTRO BOTÓN DE SIGUIENTE, PERO SUMANDOLO
-    // EN VEZ DE RESTARLO
+    // REALIZAMOS LO MISMO PARA EL OTRO BOTÓN DE SIGUIENTE, PERO SUMANDO EL
+    // CONTADOR EN ++ EN VEZ DE RESTARLO
     @FXML
     private void makelele(ActionEvent event) {
-        for (int i = 0; i < imageFolder.size(); i++) {
-            if (imageFolder.get(i).getPath().equals(namePreview.getText())) {
-                // SUMAREMOS UN ++ CADA VEZ QUE RECORRA EL BUCLE PARA EL ARRAY
-                i++;
-                if (i == imageFolder.size()) {
-                    i = 0;
-                }
-                namePreview.setText(imageFolder.get(i).getPath());
-                datePreview.setText(imageFolder.get(i).getNombreFecha());
-                imageViewFotos.setImage(imageFolder.get(i).getImage());
-                break;
+        if (imageFolder.get(contador).getPath().equals(namePreview.getText())) {
+            // SUMAREMOS UN ++ CADA VEZ QUE SE EJECUTE EL int DEL CONTADOR
+            contador++;
+            if (contador == imageFolder.size()) {
+                contador = 0;
             }
+            namePreview.setText(imageFolder.get(contador).getPath());
+            datePreview.setText(imageFolder.get(contador).getNombreFecha());
+            imageViewFotos.setImage(imageFolder.get(contador).getImage());
         }
     }
 
@@ -565,6 +582,7 @@ public class VistaController implements Initializable {
         for (int i = 0; i < bobobo.size(); i++) {
             for (int j = 0; j < imageFolder.size(); j++) {
                 imageFolder.get(j).setFavImg(true);
+                favText.setText("ES UNA IMÁGEN FAVORITA");
             }
         }
     }
@@ -621,6 +639,7 @@ public class VistaController implements Initializable {
                 if (!imageFolder.get(i).isFavImg()) {
                     imgFav.add(imageFolder.get(i).getNombrePath());
                     imageFolder.get(i).setFavImg(true);
+                    favText.setText("ES UNA IMÁGEN FAVORITA");
                 }
             }
         }
@@ -636,6 +655,7 @@ public class VistaController implements Initializable {
                 if (imageFolder.get(i).isFavImg()) {
                     imgFav.remove(imageFolder.get(i).getNombrePath());
                     imageFolder.get(i).setFavImg(false);
+                    favText.setText("NO ES UNA IMÁGEN FAVORITA");
                 }
             }
         }
