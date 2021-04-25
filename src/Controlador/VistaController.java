@@ -97,11 +97,11 @@ public class VistaController implements Initializable {
     @FXML
     private Button guardarFavs;
     @FXML
-    private Button eliminarFavs;
-    @FXML
     private Button imgFavButton1;
     @FXML
     private Button imgFavButton;
+    @FXML
+    private Button quitar;
     /**
      * Initializes the controller class.
      */
@@ -398,7 +398,6 @@ public class VistaController implements Initializable {
         if (imgFav.size() <= index) {
             System.out.println("Index out of bounds");
         }
-        
         // DECLARAMOS EN UN NUEVO FILE EL ARRAY DE FOTOS
         // PASANDOLE UN ENTERO, QUE ES EL CONTADOR DE LA FUNCION CREAR FOTOS
         File file = new File(imgFav.get(index).replace("file:\\", ""));
@@ -412,6 +411,7 @@ public class VistaController implements Initializable {
         labelName.setMaxWidth(ELEMENT_SIZE);
         labelDate.setWrapText(true);
         labelDate.setMaxWidth(ELEMENT_SIZE);
+        a.setFavImg(false);
 
         // PASAMOS LA URL A toString
         Image imageVbox = new Image(file.toString().replace("\\", "/"));
@@ -528,7 +528,7 @@ public class VistaController implements Initializable {
             out.writeObject(bobobo);
             out.close();
             fileOut.close();
-            System.out.printf("Se ha serializado las fav img's en /Controlador/imgFav.ser" + "\n");
+//            System.out.printf("Se ha serializado las fav img's en /Controlador/imgFav.ser" + "\n");
         } catch (IOException i) {
             i.printStackTrace();
         }
@@ -551,9 +551,7 @@ public class VistaController implements Initializable {
         }
         for (int i = 0; i < bobobo.size(); i++) {
             for (int j = 0; j < imageFolder.size(); j++) {
-                if (imageFolder.get(j).getPath().equals(bobobo.get(i))) {
-                    imageFolder.get(j).setFavImg(true);
-                }
+                imageFolder.get(j).setFavImg(true);
             }
         }
     }
@@ -618,21 +616,20 @@ public class VistaController implements Initializable {
         mostrarOutput();
     }
 
-//    @FXML
-//    private void deleteFav(ActionEvent event) {
-//        for (int i = 0; i < imageFolder.size(); i++) {
-//            if (imageFolder.get(i).getPath().equals(namePreview.getText())) {
-//                if (imageFolder.get(i).isFavImg()) {
-//                    imgFav.remove(imageFolder.get(i).getNombrePath());
-//                    imageFolder.get(i).setFavImg(false);
-//                    break;
-//                }
-//            }
-//        }
-//        saveFavs();
-//        outputFav();
-//        mostrarOutput();
-//    }
+    @FXML
+    private void quitarFavs(ActionEvent event) {
+        for (int i = 0; i < imageFolder.size(); i++) {
+            if (imageFolder.get(i).getPath().equals(namePreview.getText())) {
+                if (imageFolder.get(i).isFavImg()) {
+                    imgFav.remove(imageFolder.get(i).getNombrePath());
+                    imageFolder.get(i).setFavImg(false);
+                }
+            }
+        }
+        saveFavs();
+        outputFav();
+        mostrarOutput();
+    }
 
     @FXML
     private void filtroImgFav(ActionEvent event) {
