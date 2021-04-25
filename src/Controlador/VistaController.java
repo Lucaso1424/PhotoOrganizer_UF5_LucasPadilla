@@ -33,7 +33,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -175,6 +174,8 @@ public class VistaController implements Initializable {
 
                 // LLAMAMOS A LA FUNCIÓN RECURSIVAMENTE PARA QUE RECORRA EL BUCLE PASAR LOS ARCHIVOS
                 listarDirectorio(listado[i], directorio);
+            } else if (listado[i].isFile()) {
+
             }
         }
 
@@ -220,8 +221,6 @@ public class VistaController implements Initializable {
                             return pepe;
                         }
                     };
-
-                    tree.setRoot(abrirCarpetas(opcion));
 
                     // GESTIÓN DE FILAS Y COLUMNAS
                     // DECLARAMOS EL NUEVO ARRAYLIST PARA EL fotoJpg PARA EL FILTRO
@@ -289,9 +288,26 @@ public class VistaController implements Initializable {
                             crearFotos();
                         }
                     });
+                    tree.setRoot(abrirCarpetas(opcion));
                 }
             }
         });
+    }
+
+    public TreeItem<String> abrirCarpetas(File directorio) {
+        TreeItem<String> rootTree = new TreeItem<String>(directorio.getName());
+        // HACEMOS UN FOR EACH, QUE POR CADA FILE DE CADA DIRECTORIO DE LA LISTA        
+        for (File files : directorio.listFiles()) {
+            if (files.isDirectory()) {
+                // SI ES UN DIRECTORIO, AÑADE LA CARPETA EN LA PADRE EN EL rootTree CON EL .add()
+                rootTree.getChildren().add(abrirCarpetas(files));
+            } else {
+                // SI NO ES UN DIRECTORIO, AÑADE EL ITEM DEL ARCHIVO CON EL .add() Y EL .getName()
+                rootTree.getChildren().add(new TreeItem<String>(files.getName()));
+            }
+        }
+        // HACEMOS EL RETURN DEL DIRECTORIO
+        return rootTree;            
     }
 
     private void crearFotos() {
@@ -471,19 +487,6 @@ public class VistaController implements Initializable {
         // VOLVER A EJECUTAR LA FUNCIÓN Y QUE SE IMPRIMAN LAS FOTOS EN BUCLE
         imageView = null;
         return vbox;
-    }
-
-    public TreeItem<String> abrirCarpetas(File directorio) {
-        TreeItem<String> rootTree = new TreeItem<String>(directorio.getName());
-        // HACEMOS UN FOR EACH, QUE POR CADA FILE DE CADA DIRECTORIO DE LA LISTA        
-        for (File files : directorio.listFiles()) {
-            if (files.isDirectory()) {
-                // SI ES UN DIRECTORIO, AÑADE LA CARPETA EN LA PADRE EN EL rootTree CON EL .add()
-                rootTree.getChildren().add(abrirCarpetas(files));
-            }
-        }
-        // HACEMOS EL RETURN DEL DIRECTORIO
-        return rootTree;
     }
 
     // REALIZAMOS EL SIGUIENTE CÓDIGO PARA EL ANTERIOR
@@ -676,13 +679,14 @@ public class VistaController implements Initializable {
                 if (imageFolder.get(i).isSelectedFoto()) {
                     // DECLARAMOS EN UN NUEVO File QUE NOS COJA LA RUTA DE LA FOTO 
                     File file = new File(imageFolder.get(i).getNombrePath());
-                    
+
                     // DECLARAMOS EN UN OBJETO Path LA RUTA DE LA IMAGEN, QUITANDO EL file:\\ CON EL .replace()
                     Path pathToFile = FileSystems.getDefault().getPath(file.getPath().replace("file:\\", ""));
                     // DECLARAMOS EN UN OBJETO Path, EL DIRECTORIO QUE QUEREMOS CAMBIAR, CON EL getAbsolutePath, 
                     // Y AÑADIENDOLE LA FOTO RECORRIDA MÁS EL getPath
                     Path ruta = FileSystems.getDefault().getPath(opcion.getAbsolutePath() + "\\" + imageFolder.get(i).getPath());
-                    // EN EL TRY, UTILIZAREMOS 
+                    // EN EL TRY, UTILIZAREMOS EL MÉTODO move, PASANDOLE POR PARÁMETRO LA RUTA DEL ARCHIVO, LA RUTA A MOVER Y EL 
+                    // PARÁMETRO DE LA CLASE StandardCopyOption.REPLACE_EXISTING
                     try {
                         Files.move(pathToFile, ruta, StandardCopyOption.REPLACE_EXISTING);
                         abrirCarpetas(opcion);
