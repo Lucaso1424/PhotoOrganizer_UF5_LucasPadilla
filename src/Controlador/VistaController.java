@@ -441,19 +441,20 @@ public class VistaController implements Initializable {
         // DECLARAMOS EN UN NUEVO FILE EL ARRAY DE FOTOS
         // PASANDOLE UN ENTERO, QUE ES EL CONTADOR DE LA FUNCION CREAR FOTOS
 
-        File file = new File(imgFav.get(index).replace("file:\\", ""));
-
+        String replace;
+        replace = imgFav.get(index).substring(imgFav.get(index).lastIndexOf("file:\\") + 1);
+        File file = new File(replace);
+        
         // CREAMOS UN NUEVO OBJETO DE DATE FORMAR, Y LE PASAMOS POR PARAMETROS LA FECHA Y HORA
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        Label labelName = new Label(file.getName());
-//        Label labelDate = new Label(dateFormat.format(file.lastModified()));
-        Label labelDate = new Label(dateFormat.format(file.lastModified()));
+        Label labelNameFav = new Label(file.getName());
+        Label labelDateFav = new Label(dateFormat.format(file.lastModified()));
         // FORMATEAMOS EL LABEL DE LA FECHA Y EL NOMBRE
         // CREAMOS UN NUEVO OBJETO DE DATE FORMAR, Y LE PASAMOS POR PARAMETROS LA FECHA Y HORA
-        labelName.setWrapText(true);
-        labelName.setMaxWidth(ELEMENT_SIZE);
-        labelDate.setWrapText(true);
-        labelDate.setMaxWidth(ELEMENT_SIZE);
+        labelNameFav.setWrapText(true);
+        labelNameFav.setMaxWidth(ELEMENT_SIZE);
+        labelDateFav.setWrapText(true);
+        labelDateFav.setMaxWidth(ELEMENT_SIZE);
         a.setFavImg(true);
         favText.setText("ES UNA IMÁGEN FAVORITA");
 
@@ -467,6 +468,7 @@ public class VistaController implements Initializable {
 
         imageView.setSmooth(true);
         imageView.setCache(true);
+       
 
         // SETEAMOS LA PREVIEW DE LA IMAGEN DE LA CLASE ImageFolder
         a.setPreviewImage(imageView);
@@ -474,19 +476,19 @@ public class VistaController implements Initializable {
         // HACEMOS EL SETTER DE LA RUTA DE lA IMAGEN
         a.setPathImage(file);
         // SETEAMOS LA FECHA Y LO PASAMOS A toString
-        a.setNombreFecha(labelDate.toString());
+        a.setNombreFecha(labelDateFav.toString());
         // SETEAMOS LA IMAGEN image QUE GESTIONAMOS EN EL try
         a.setImage(imageVbox);
         a.setNombrePath(file.toString());
-
+                
         // HACEMOS EL getPreviewImage, Y ACCEDEMOS AL EVENT HANDLER DEL MOUSE CLICKED
         a.getPreviewImage().setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
                 // SETEAMOS LA IMAGEN EN imageViewFotos (QUE ES EL PANEL DE ImageView DE LA VISTA)
                 // Y DENTRO HACEMOS UN getImage(); DE LA IMAGEN SETEADA DE LA LINEA DE ARRIBA
-                namePreview.setText(labelName.getText());
-                datePreview.setText(labelDate.getText());
+                namePreview.setText(labelNameFav.getText());
+                datePreview.setText(labelDateFav.getText());
                 imageViewFotos.setImage(a.getImage());
 
                 // RECORREMOS EL ARRAY DE imgFav(), Y LUEGO
@@ -504,8 +506,8 @@ public class VistaController implements Initializable {
         // AÑADIMOS CON EL getChildren() EL .add() DE LA PREVIEW DE LA IMAGEN 
         // CON EL imageView DE ARRIBA
         vbox.getChildren().add(imageView);
-        vbox.getChildren().add(labelName);
-        vbox.getChildren().add(labelDate);
+        vbox.getChildren().add(labelNameFav);
+        vbox.getChildren().add(labelDateFav);
 
         // LO DECLARAMOS COMO NULO Y LA DEVOLVEMOS PARA  
         // VOLVER A EJECUTAR LA FUNCIÓN Y QUE SE IMPRIMAN LAS FOTOS EN BUCLE

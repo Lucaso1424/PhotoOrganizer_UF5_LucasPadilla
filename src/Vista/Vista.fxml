@@ -129,6 +129,7 @@
                </FlowPane.margin>
             </ImageView>
             <Text fx:id="favText" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="261.0" />
+            <Text fx:id="name1212" strokeType="OUTSIDE" strokeWidth="0.0" text="Nombre" wrappingWidth="145.845703125" />
             <Text fx:id="datePreview" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="243.0">
                <FlowPane.margin>
                   <Insets left="10.0" top="60.0" />
