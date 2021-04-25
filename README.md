@@ -17,11 +17,11 @@ La implementació és lliure sempre i quant es compleixin els següents requisit
 
             Es pot establir un "slider" per determinar la mida.
 
-        · Cal poder seleccionar un grup d’imatges i moure-les a una altra carpeta
+        · Cal poder seleccionar un grup d’imatges i moure-les a una altra carpeta --> FET
 
         · En la vista de miniatures cal poder veure característiques de la imatge, almenys el nom i la data de l’última modificació. --> FET
 
-        · Cal poder seleccionar algunes imatges i marcar-les com a preferides.
+        · Cal poder seleccionar algunes imatges i marcar-les com a preferides. --> FET
 
             Pot ser un codi de colors.
 
@@ -29,9 +29,9 @@ La implementació és lliure sempre i quant es compleixin els següents requisit
 
             O simplement una selecció binària, preferida/no preferida. Una estrelleta o similar…
 
-        · La selecció d’imatges preferides es manté si es tanca l’aplicació.
+        · La selecció d’imatges preferides es manté si es tanca l’aplicació. --> FET
 
-        · Cal poder filtrar les miniatures per les imatges preferides/totes, o per puntuacions.
+        · Cal poder filtrar les miniatures per les imatges preferides/totes, o per puntuacions. --> FET
 
         · S’ha de poder seleccionar una miniatura i mostrar la imatge seleccionada. --> FET
 
