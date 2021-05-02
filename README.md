@@ -67,3 +67,4 @@ La implementació és lliure sempre i quant es compleixin els següents requisit
 
         Conclusó individual.
 
+![imagen](https://user-images.githubusercontent.com/58809030/116812835-10f31980-ab51-11eb-85de-320aadbbb31c.png)
